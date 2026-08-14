@@ -35,6 +35,7 @@ try {
  <?php if (!empty($navFlags['/home-2'])): ?>
  <li><a href="/home-2"<?= $activePage === 'home2' ? ' style="color:var(--black)"' : '' ?>>Home 2.0</a></li>
  <?php endif; ?>
+ <li><a href="/?view=home-3"<?= $activePage === 'home3' ? ' style="color:var(--black)"' : '' ?>>Home 3.0</a></li>
  <li class="has-mega">
    <a href="/#functions">Platform</a>
    <div class="mega-panel">

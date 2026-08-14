@@ -618,7 +618,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($which === '021' || $which === 'all') {
         $toRun['021'] = migration_021_statements();
     }
-
     foreach ($toRun as $name => $statements) {
         try {
             foreach ($statements as $sql) {
@@ -687,7 +686,6 @@ $migration020Done = (int) $stmt020->fetchColumn() >= 1;
 $stmt021 = $pdo->prepare('SELECT COUNT(*) FROM pages WHERE slug = ?');
 $stmt021->execute(['/crm-solution']);
 $migration021Done = (int) $stmt021->fetchColumn() >= 1;
-
 $pageTitle = 'Run Migrations';
 $pageSub = 'One-time database updates for new features.';
 $activeNav = 'migrations';

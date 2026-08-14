@@ -20,8 +20,14 @@ html{scroll-behavior:smooth}
  --green:#32b46f;
  --orange:#14855a;
  --font:'Montserrat',sans-serif;
+ --font-display:'Montserrat',sans-serif;
+ --font-body:'Inter',sans-serif;
 }
-body{font-family:var(--font);background:var(--bg);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+/* overflow-x:hidden turns <body> into a scroll container, which silently disables
+   position:sticky anywhere on the page. overflow-x:clip clips identically WITHOUT
+   creating a scroll container, so sticky keeps working. The hidden declaration stays
+   first as a fallback for browsers that don't support clip. */
+body{font-family:var(--font);background:var(--bg);color:var(--black);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased}
 
 /* ── GRID TEXTURE ── */
 .grid-bg{
@@ -76,6 +82,17 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:1.1rem}
 .eyebrow-line{width:32px;height:1.5px;background:var(--blue)}
 .eyebrow-text{font-size:10.5px;text-transform:uppercase;letter-spacing:.15em;color:var(--blue);font-weight:700}
+/* ── Homepage section headings: smaller + slightly bolder ──
+   Scoped to the homepage's 9 section IDs (all verified unique to home-body.php) because
+   the bare .sec-h class is shared by 15 other pages, which must keep their current size.
+   The hero (.hero-h) and final CTA (.cta-h) are deliberately excluded — they keep their
+   existing large display sizes. Responsive overrides mirror this further down. */
+#functions .sec-h,#unify .sec-h,#method .sec-h,#solutions .sec-h,#tech .sec-h,
+#cases .sec-h,#industries .sec-h,#why .sec-h,#dashboards .sec-h{
+ font-size:clamp(30px,4vw,46px);
+ font-weight:900;
+}
+
 .sec-h{
  font-size:clamp(38px,5.5vw,62px);font-weight:800;
  letter-spacing:-.025em;line-height:1.04;
@@ -91,44 +108,119 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 
 /* ── HERO ── */
 #hero{
- min-height:100vh;display:flex;flex-direction:column;
- align-items:center;justify-content:center;text-align:center;
+ min-height:100vh;display:flex;align-items:center;justify-content:center;
  padding:7rem 3.5rem 4rem;overflow:hidden;border-bottom:1px solid var(--border);
+ position:relative;
 }
-/* Industry tabs */
-.ind-tabs{
- display:flex;gap:0;justify-content:center;margin-bottom:0;
- border:1.5px solid var(--border);background:var(--white);
- overflow:hidden;width:fit-content;margin-left:auto;margin-right:auto;
+.hero-grid{
+ display:grid;grid-template-columns:minmax(0,42%) minmax(0,58%);
+ gap:4rem;align-items:center;max-width:1400px;width:100%;margin:0 auto;
+ position:relative;z-index:2;
 }
-.ind-tab{
- font-family:var(--font);font-size:12px;font-weight:700;
- letter-spacing:.05em;text-transform:uppercase;
- padding:13px 28px;border:none;border-right:1.5px solid var(--border);
- background:transparent;color:var(--g400);cursor:pointer;
- transition:all .22s ease;position:relative;
- display:flex;flex-direction:column;align-items:center;gap:5px;
- min-width:130px;
-}
-.ind-tab:last-child{border-right:none}
-.ind-tab .tab-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:color .22s}
-.ind-tab .tab-sub{font-size:9px;font-weight:500;color:var(--g300);letter-spacing:.04em;transition:color .22s;white-space:nowrap}
-.ind-tab .tab-bar{
- position:absolute;bottom:0;left:0;right:0;height:3px;
- background:transparent;transition:background .22s;
-}
-.ind-tab:hover:not(.active){background:var(--bg);color:var(--black)}
-.ind-tab:hover:not(.active) .tab-label{color:var(--black)}
-.ind-tab.active{background:var(--black);color:#fff}
-.ind-tab.active .tab-label{color:#fff}
-.ind-tab.active .tab-sub{color:rgba(255,255,255,.5)}
-/* screens fade transition */
-.screens-row{transition:opacity .25s ease}
-.screens-row.switching{opacity:0}
-.screens-row{transition:opacity .3s ease;border:none;outline:none;background:transparent}
+.hero-left{text-align:left}
+.hero-right{display:flex;flex-direction:column;max-width:580px;width:100%;margin-left:auto;animation:fu .7s ease .3s both}
 
-/* Product frame */
-.hero-product-wrap{width:100%;max-width:1100px;margin-top:10rem;position:relative;animation:fu .7s ease .5s both}
+/* Grid fades toward the hero's outer edges instead of hard-cutting */
+.hero-grid-bg{
+ -webkit-mask-image:radial-gradient(ellipse 68% 62% at 50% 42%,#000 35%,transparent 85%);
+ mask-image:radial-gradient(ellipse 68% 62% at 50% 42%,#000 35%,transparent 85%);
+}
+
+/* Animated technical grid — thin green data-flow lines travelling along grid paths,
+   thickening at mid-travel; no dots, no glow, minimal and slow. */
+.grid-energy{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.ge-path{position:absolute;opacity:0}
+.ge-h{width:150px;height:1px;background:linear-gradient(90deg,transparent,rgba(50,180,111,.18) 35%,rgba(50,180,111,.65) 50%,rgba(50,180,111,.18) 65%,transparent)}
+.ge-v{width:1px;height:150px;background:linear-gradient(180deg,transparent,rgba(50,180,111,.18) 35%,rgba(50,180,111,.65) 50%,rgba(50,180,111,.18) 65%,transparent)}
+.ge-p1{top:9%;left:-150px;animation:geLineX 10s ease-in-out infinite}
+.ge-p2{top:93%;left:-150px;animation:geLineX 12s ease-in-out infinite 3s}
+.ge-p3{left:3%;top:-150px;animation:geLineY 11s ease-in-out infinite 1.5s}
+.ge-p4{left:97%;top:-150px;animation:geLineY 13s ease-in-out infinite 5s}
+@keyframes geLineX{0%{transform:translateX(0) scaleY(1);opacity:0}10%{opacity:1}50%{transform:translateX(calc(50vw + 75px)) scaleY(2.6)}90%{opacity:1}100%{transform:translateX(calc(100vw + 150px)) scaleY(1);opacity:0}}
+@keyframes geLineY{0%{transform:translateY(0) scaleX(1);opacity:0}10%{opacity:1}50%{transform:translateY(calc(50vh + 75px)) scaleX(2.6)}90%{opacity:1}100%{transform:translateY(calc(100vh + 150px)) scaleX(1);opacity:0}}
+
+.hero-glow-r{position:absolute;top:-80px;right:-80px;width:540px;height:540px;background:radial-gradient(circle,rgba(50,180,111,.12) 0%,transparent 65%);pointer-events:none;z-index:0}
+.hero-glow-l{position:absolute;bottom:-60px;left:-60px;width:420px;height:420px;background:radial-gradient(circle,rgba(50,180,111,.08) 0%,transparent 65%);pointer-events:none;z-index:0}
+
+/* Eyebrow — soft green glassmorphism pill */
+.hero-eyebrow{
+ display:inline-flex;align-items:center;gap:9px;
+ padding:9px 18px 9px 14px;width:fit-content;
+ background:rgba(50,180,111,.07);border:1px solid rgba(50,180,111,.16);
+ border-radius:999px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+ box-shadow:0 1px 3px rgba(0,0,0,.03);
+ margin-bottom:1.75rem;animation:fu .7s ease both;
+}
+.hero-eicon{width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;box-shadow:0 0 0 3px rgba(50,180,111,.15)}
+.hero-etxt{font-family:var(--font-body);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#14855a;font-weight:600}
+
+/* BIG DISPLAY TYPE */
+.hero-h{
+ font-family:var(--font-display);
+ font-size:clamp(38px,4.2vw,68px);
+ font-weight:700;line-height:.98;letter-spacing:-.02em;
+ color:var(--black);
+ margin-bottom:1.5rem;animation:fu .7s ease .1s both;
+}
+.grad-os{background:linear-gradient(115deg,#32b46f,#3cbd7a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;display:inline-block}
+.grad-ai{background:linear-gradient(115deg,#14855a,#14855a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;display:inline-block}
+.hero-p{font-family:var(--font-body);font-size:18px;color:var(--g500);max-width:540px;line-height:1.6;font-weight:400;margin-bottom:2.25rem;animation:fu .7s ease .2s both}
+
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fu .7s ease .3s both;margin-bottom:2.5rem}
+.hero-btns .btn{font-family:var(--font-body);font-weight:600;padding:15px 30px;transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease}
+.hero-btns .btn-primary{background:var(--blue);color:#fff;border-radius:6px}
+.hero-btns .btn-primary:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 10px 24px rgba(50,180,111,.35)}
+.hero-btns .btn-ghost{transform:translateY(0)}
+.hero-btns .btn-ghost:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+
+.hero-stats{display:flex;width:100%;border-top:1px solid var(--border);padding-top:1.75rem;animation:fu .7s ease .4s both}
+.hstat{flex:1;display:flex;align-items:center;gap:12px;padding-right:1rem;border-right:1px solid var(--border)}
+.hstat:last-child{border-right:none;padding-right:0}
+.hstat-ico{width:50px;height:50px;border-radius:13px;background:rgba(50,180,111,.1);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hstat-n{font-family:var(--font-display);font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.hstat-n.gr{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hstat-l{font-family:var(--font-body);font-size:13.5px;color:var(--g500);margin-top:2px;font-weight:500}
+
+/* Industry tabs — compact selector above the dashboard window */
+.ind-tabs{display:flex;gap:3px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:4px;width:100%;margin-bottom:14px}
+.ind-tab{flex:1;font-family:var(--font-body);font-size:11px;font-weight:600;padding:8px 10px;border:none;border-radius:7px;background:transparent;color:var(--g400);cursor:pointer;transition:all .2s ease;white-space:nowrap;text-align:center}
+.ind-tab:hover:not(.active){background:var(--bg);color:var(--black)}
+.ind-tab.active{background:var(--black);color:#fff}
+#tabProgressWrap{height:2px;background:var(--border);margin-bottom:1.25rem;border-radius:2px;overflow:hidden}
+#tabProgress{height:100%;width:0;background:var(--blue);transition:width .06s linear}
+
+/* Dashboard window — one product-preview window, content swapped per industry */
+.dash-window{
+ background:var(--white);border:1px solid var(--border);border-radius:20px;
+ overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.10);
+ animation:dashFloat 6s ease-in-out infinite;
+ transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1);
+}
+.dash-window.switching{opacity:0;transform:scale(.98) translateY(8px)}
+@keyframes dashFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.dw-topbar{display:flex;align-items:center;gap:7px;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.dw-dot{width:9px;height:9px;border-radius:50%}
+.dw-brand{margin-left:6px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--g500)}
+.dw-menu{margin-left:auto;color:var(--g400)}
+.dw-body{padding:28px}
+.dw-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}
+.dw-title{font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--black)}
+.dw-meta{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.dw-live{font-family:var(--font-body);font-size:9.5px;font-weight:700;letter-spacing:.05em;padding:3px 9px;border-radius:20px}
+.dw-month{font-family:var(--font-body);font-size:10.5px;color:var(--g400);font-weight:500}
+.dw-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.dw-kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 12px}
+.dw-kv{font-family:var(--font-display);font-size:19px;font-weight:700;letter-spacing:-.01em;line-height:1;margin-bottom:5px}
+.dw-kl{font-family:var(--font-body);font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;font-weight:500}
+.dw-chart{margin-bottom:20px}
+.dw-chart-label{font-family:var(--font-body);font-size:9.5px;color:var(--g400);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.dw-chart-bars{display:flex;align-items:flex-end;gap:6px;height:76px}
+.dw-bar{flex:1;border-radius:3px 3px 0 0}
+.dw-ai{background:rgba(50,180,111,.07);border-left:2.5px solid var(--blue);border-radius:0 8px 8px 0;padding:13px 16px}
+.dw-ai-label{font-family:var(--font-body);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.dw-ai-text{font-family:var(--font-body);font-size:12px;color:var(--g500);line-height:1.55}
+
+/* Product frame (legacy, unused by the current hero) */
 .hero-product-frame{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 32px 100px rgba(0,0,0,.13)}
 .hpf-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border)}
 .hpf-url{display:flex;align-items:center;gap:5px;flex:1;background:var(--white);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:10px;color:var(--g400);font-weight:500;max-width:260px}
@@ -150,73 +242,12 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .hpf-chart-head{display:flex;justify-content:space-between;align-items:center}
 .hpf-chart-title{font-size:10px;font-weight:800;letter-spacing:-.01em}
 .hpf-chart-sub{font-size:8.5px;color:var(--g400);font-weight:500}
-/* Floating badges */
-.hero-float{position:absolute;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;box-shadow:0 8px 28px rgba(0,0,0,.08);z-index:4}
-.hero-float-l{bottom:60px;left:-16px}
-.hero-float-r{top:60px;right:-16px}
-.hero-glow-r{position:absolute;top:-80px;right:-80px;width:540px;height:540px;background:radial-gradient(circle,rgba(50,180,111,.12) 0%,transparent 65%);pointer-events:none}
-.hero-glow-l{position:absolute;bottom:-60px;left:-60px;width:420px;height:420px;background:radial-gradient(circle,rgba(50,180,111,.08) 0%,transparent 65%);pointer-events:none}
-.hero-eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:2.25rem;animation:fu .7s ease both}
-.hero-eline{width:36px;height:1.5px;background:var(--blue)}
-.hero-etxt{font-size:10.5px;text-transform:uppercase;letter-spacing:.17em;color:#32b46f;font-weight:700}
-/* BIG DISPLAY TYPE */
-.hero-h{
- font-size:clamp(52px,8vw,110px);
- font-weight:900;line-height:.92;letter-spacing:-.04em;
- margin-bottom:1.75rem;animation:fu .7s ease .1s both;
-}
-.hero-h .grad{background:linear-gradient(115deg,#32b46f 0%,#14855a 55%,#0f7a52 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-h .ghost{color:var(--g300);display:block}
-.grad-os{background:linear-gradient(115deg,#32b46f,#3cbd7a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;display:inline-block;padding-right:4px}
-.grad-ai{background:linear-gradient(115deg,#14855a,#14855a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;display:inline-block;padding-right:4px}
-.hero-h .solid{color:var(--black);display:block}
-.hero-p{font-size:16.5px;color:var(--g500);max-width:500px;line-height:1.65;font-weight:400;margin-bottom:2.5rem;animation:fu .7s ease .2s both}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fu .7s ease .3s both;margin-bottom:0}
 
-.hero-stats{
- display:flex;width:100%;max-width:700px;
- border-top:1px solid var(--border);padding-top:2.5rem;margin-top:4rem;
- animation:fu .7s ease .5s both;
+@media(prefers-reduced-motion:reduce){
+ .ge-path{display:none}
+ .dash-window{animation:none;transition:none}
+ .hero-h,.hero-p,.hero-btns,.hero-stats,.hero-eyebrow,.hero-right{animation:none}
 }
-.hstat{flex:1;text-align:center;padding:0 1.5rem;border-right:1px solid var(--border)}
-.hstat:last-child{border-right:none}
-.hstat-n{font-size:56px;font-weight:800;letter-spacing:-.03em;line-height:1}
-.hstat-n.gr{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hstat-l{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--g400);margin-top:8px;font-weight:600}
-
-/* ── HERO SCREENS ── */
-.hero-screens{
- width:100%;max-width:1060px;margin-top:3.5rem;
- animation:fu .7s ease .55s both;position:relative;
-}
-.screens-row{display:flex;align-items:center;justify-content:center;gap:0}
-.screen{background:var(--white);border:1.5px solid var(--border);overflow:hidden;box-shadow:0 16px 56px rgba(0,0,0,.09);border-radius:10px;}
-.screen-c{width:420px;z-index:3;box-shadow:0 24px 80px rgba(0,0,0,.13)}
-.screen-s{width:276px}
-.screen-l{transform:perspective(960px) rotateY(15deg) translateX(24px) scale(.87);z-index:2;opacity:.85}
-.screen-r{transform:perspective(960px) rotateY(-15deg) translateX(-24px) scale(.87);z-index:2;opacity:.85}
-/* screen internals */
-.s-bar{display:flex;align-items:center;gap:5px;padding:8px 11px;background:var(--bg);border-bottom:1px solid var(--border)}
-.s-dot{width:9px;height:9px;border-radius:50%}
-.s-title{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--g400);text-transform:uppercase}
-.s-body{padding:13px}
-.s-mod{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px}
-.s-krow{display:flex;gap:5px;margin-bottom:11px}
-.s-k{flex:1;background:var(--bg);border-radius:5px;padding:7px 6px;border:1px solid var(--border)}
-.s-kv{font-size:12px;font-weight:800;line-height:1;margin-bottom:2px}
-.s-kl{font-size:7.5px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-.s-bars{display:flex;align-items:flex-end;gap:3px;height:44px;margin-bottom:9px}
-.s-bar{flex:1;background:var(--border);border-radius:8px; 2px 0 0}
-.s-divider{height:1px;background:var(--border);margin:9px 0}
-.s-list{display:flex;flex-direction:column;gap:5px}
-.s-li{display:flex;align-items:center;gap:6px;font-size:9.5px;color:var(--g500)}
-.s-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.s-badge{margin-left:auto;font-size:7.5px;padding:2px 5px;font-weight:700}
-.s-hbars{display:flex;flex-direction:column;gap:7px}
-.s-hrow{display:flex;align-items:center;gap:6px;font-size:8.5px;color:var(--g500)}
-.s-hrow span:first-child{width:50px;font-weight:600}
-.s-track{flex:1;height:3.5px;background:var(--border);border-radius:8px;overflow:hidden}
-.s-fill{height:100%;border-radius:8px;}
 
 /* ── MARQUEE ── */
 .mq-wrap{overflow:hidden;border-bottom:1px solid var(--border);background:var(--white);padding:0}
@@ -225,13 +256,214 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .mq-icon{width:14px;height:14px;color:var(--blue);flex-shrink:0}
 .mq-item span{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}
 
-/* ── FUNCTIONS ── */
+/* ── FUNCTIONS (homepage) — minimal editorial cards, single row.
+   Namespaced "cf-" (Core Functions) — deliberately NOT reusing .fn-* below, which is
+   a separate shared card system still used as-is on the About Us services grid.
+   Desktop: sticky-pinned section — page-scroll drives the row's translateX (JS).
+   The sticky box is sized to its natural content height (no forced 100vh, no extra
+   padding) so the pin duration matches only the actual horizontal overflow — that
+   mismatch was the earlier bug that produced a large dead-space gap.
+   Mobile / prefers-reduced-motion: falls back to plain touch/swipe overflow-x scroll. ── */
+/* ══════════════════ HOW WE WORK — dark split layout ══════════════════
+   Every rule here is scoped under #method on purpose: .fn-grid/.fn-card/.fn-icon/
+   .fn-num/.fn-name/.fn-desc/.fn-tag are a SHARED card system also used by the
+   About Us services grid, which must keep its original light styling. */
+/* The artwork IS the section background. Layer order (topmost first):
+   1. left-to-right scrim  — keeps the copy legible over the image
+   2. energy-bolt.webp     — cover, anchored right so the bolt stays on the right
+   3. solid base colour    — also the graceful fallback if the file is ever missing  */
+#method{
+ /* NOTE: no overflow:hidden here — it would turn this into a clipping context and
+    disable position:sticky on the stage cards. The artwork is a background-image
+    (cover), which cannot overflow, so clipping is no longer needed. */
+ color:#fff;position:relative;
+ background-color:#03080c;
+ background-image:
+  linear-gradient(100deg,rgba(3,8,12,.96) 0%,rgba(3,8,12,.9) 30%,rgba(3,8,12,.62) 50%,rgba(3,8,12,.2) 72%,rgba(3,8,12,0) 88%),
+  url('/assets/img/energy-bolt.webp');
+ /* background-attachment:fixed makes the VIEWPORT the positioning/sizing area instead of
+    the section box. Two things follow, both of which we want:
+      1. the artwork is sized against the viewport, not this (now very tall) sticky
+         section — otherwise `cover` blew it up to the full scroll height;
+      2. it stays put while the stage cards scroll over it. */
+ /* Bottom-anchored so the bolt stands on its own baked-in floor reflection.
+    Sizing maths: the artwork carries ~13% empty dark space above the bolt, so the tip
+    sits at  viewportH - 0.87 x imageH.  Solving that for "tip 102px down" (nav is 77px,
+    leaving a ~25px gap) gives imageH = 1.149 x viewportH - 117px.
+    A plain vh value can't hold this: it would clear the nav on a tall screen but slide
+    behind it on a short one. The calc keeps the gap constant at any viewport height. */
+ background-size:cover,auto calc(115vh - 117px);
+ background-position:center,right 5vw bottom;
+ background-repeat:no-repeat,no-repeat;
+ background-attachment:fixed,fixed;
+}
+#method .mth-left{position:relative;z-index:3;width:58%;max-width:760px}
+
+/* left column: same content, left-aligned instead of the global centred treatment */
+#method .eyebrow{justify-content:flex-start}
+#method .sec-h{text-align:left;color:#fff;margin-bottom:1.1rem}
+#method .sec-sub{text-align:left;margin:0 0 2.5rem;color:rgba(255,255,255,.62);max-width:620px}
+#method .unify-stat{text-align:left;color:#fff;margin-top:2rem}
+#method .sec-cta{justify-content:flex-start;margin-top:1.6rem}
+
+/* 2 × 2 dark glass card grid (overrides the shared light 4-col divider grid) */
+/* ambient glow that intensifies as the active stage advances (data-stage set in JS) */
+#method::after{
+ content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+ background:radial-gradient(58% 55% at 78% 50%,rgba(50,180,111,.38) 0%,transparent 70%);
+ opacity:var(--stage-glow,.18);
+ transition:opacity .7s cubic-bezier(.4,0,.2,1);
+}
+#method[data-stage="0"]{--stage-glow:.18}
+#method[data-stage="1"]{--stage-glow:.34}
+#method[data-stage="2"]{--stage-glow:.54}
+#method[data-stage="3"]{--stage-glow:.78}
+
+/* single-column sticky stage stack (was a 2×2 grid) */
+#method .fn-grid{
+ display:flex;flex-direction:column;gap:28px;
+ grid-template-columns:none;
+ background:transparent;border:none;border-radius:0;overflow:visible;
+ max-width:600px;padding-bottom:10vh;
+}
+#method .fn-card{
+ position:sticky;
+ background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.1);
+ border-radius:18px;padding:1.9rem;
+ backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+ box-shadow:0 18px 40px rgba(0,0,0,.35);
+ /* opacity/transform/filter are driven per-frame from scroll position in JS and are
+    deliberately excluded from this transition, which would otherwise lag the scroll */
+ transition:border-color .3s ease,box-shadow .3s ease,background .3s ease;
+ transform-origin:top center;
+ will-change:opacity,transform,filter;
+}
+/* staggered sticky offsets build the deck; each stage parks 24px below the last so the
+   previous card's top edge stays visible behind it. Offsets clear the ~77px fixed nav. */
+#method .fn-card:nth-child(1){top:104px;z-index:1}
+#method .fn-card:nth-child(2){top:128px;z-index:2}
+#method .fn-card:nth-child(3){top:152px;z-index:3}
+#method .fn-card:nth-child(4){top:176px;z-index:4}
+/* the stage currently in the foreground */
+#method .fn-card.is-active{
+ background:rgba(255,255,255,.075);
+ border-color:rgba(50,180,111,.5);
+ box-shadow:0 22px 50px rgba(0,0,0,.45),0 0 44px rgba(50,180,111,.2);
+}
+/* no transform on hover — it would overwrite the scroll-driven scale set inline by JS */
+#method .fn-card:hover{
+ background:rgba(255,255,255,.07);
+ border-color:rgba(50,180,111,.5);
+ box-shadow:0 22px 50px rgba(0,0,0,.45),0 0 34px rgba(50,180,111,.22);
+}
+#method .fn-name{color:#fff}
+#method .fn-desc{color:rgba(255,255,255,.58)}
+#method .fn-tag{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
+/* The duplicated "01 — AUDIT" labels were removed from these four cards, so retune the
+   vertical rhythm for the icon → title → description → tags stack. The shared .fn-tags
+   rule carries margin-bottom:1.1rem to clear an "Explore module" link that doesn't
+   exist in this section — zero it out so the cards don't end on a dead gap.
+   .fn-desc keeps its inherited flex:1, which pins the tag row to the card foot so all
+   four align on the same baseline regardless of description length. */
+#method .fn-icon{margin-bottom:1rem}
+#method .fn-name{margin-bottom:.5rem}
+#method .fn-desc{margin-bottom:1rem}
+#method .fn-tags{margin-bottom:0}
+#method .unify-stat .g2{-webkit-text-fill-color:initial;background:none;color:var(--blue)}
+
+/* premium dark CTA with green hover glow */
+#method .btn-black{
+ background:rgba(255,255,255,.06);color:#fff;
+ border:1px solid rgba(255,255,255,.18);
+ transition:border-color .25s ease,box-shadow .25s ease,background .25s ease,transform .2s ease;
+}
+#method .btn-black:hover{
+ background:rgba(50,180,111,.14);border-color:rgba(50,180,111,.65);
+ box-shadow:0 0 30px rgba(50,180,111,.35);opacity:1;transform:translateY(-2px);
+}
+
+@media(max-width:1100px){
+ #method .mth-left{width:64%}
+}
+/* narrower viewports: the copy spans full width, so darken the scrim further so the
+   background artwork never competes with text legibility */
+@media(max-width:900px){
+ #method .mth-left{width:100%;max-width:none}
+ #method .fn-grid{max-width:none}
+ /* background-attachment:fixed is unreliable/janky on iOS Safari and mobile Chrome,
+    so fall back to a normal scrolling background at smaller widths. Sizing is pinned
+    to vh (not `cover`) so the tall section still can't blow the artwork up. */
+ #method{
+  background-attachment:scroll,scroll;
+  background-size:cover,auto 78vh;
+  background-position:center,right 0 bottom;
+  background-image:
+   linear-gradient(100deg,rgba(3,8,12,.97) 0%,rgba(3,8,12,.93) 42%,rgba(3,8,12,.78) 70%,rgba(3,8,12,.55) 100%),
+   url('/assets/img/energy-bolt.webp');
+ }
+}
+@media(max-width:560px){
+ #method .fn-grid{gap:20px;padding-bottom:6vh}
+ #method .fn-card{padding:1.5rem;border-radius:16px}
+ #method .fn-card:nth-child(1){top:92px}
+ #method .fn-card:nth-child(2){top:110px}
+ #method .fn-card:nth-child(3){top:128px}
+ #method .fn-card:nth-child(4){top:146px}
+ #method{
+  background-attachment:scroll,scroll;
+  background-size:cover,auto 54vh;
+  background-position:center,right -4vw bottom;
+  background-image:
+   linear-gradient(100deg,rgba(3,8,12,.97) 0%,rgba(3,8,12,.95) 50%,rgba(3,8,12,.85) 100%),
+   url('/assets/img/energy-bolt.webp');
+ }
+ #method .sec-cta{justify-content:center}
+ #method .sec-cta .btn{width:100%;max-width:360px;justify-content:center}
+}
+/* reduced motion: JS never runs, so cards stay fully opaque and simply stack statically */
+@media(prefers-reduced-motion:reduce){
+ #method .fn-card{position:static}
+ #method::after{transition:none}
+}
+
 #functions{background:var(--bg)}
+.cf-scroll-outer{position:relative;width:100%}
+.cf-scroll-sticky{position:sticky;top:84px;width:100%;display:flex;align-items:center;overflow:hidden}
+.cf-row{
+ display:flex;gap:20px;width:max-content;flex:none;
+ overflow-x:hidden;
+ padding:8px 8px 14px;margin:-8px -8px 0;
+ scrollbar-width:none;-ms-overflow-style:none;
+ will-change:transform;
+}
+.cf-row::-webkit-scrollbar{display:none}
+.cf-card{
+ flex:0 0 320px;width:320px;min-height:300px;scroll-snap-align:start;
+ background:#F5F5F3;border:1px solid #E8E8E8;border-radius:12px;
+ padding:26px;display:flex;flex-direction:column;
+}
+.cf-icon{width:28px;height:28px;color:#111111;flex-shrink:0;margin-bottom:16px}
+.cf-icon svg{width:100%;height:100%}
+.cf-num{font-family:var(--font-body);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#999999;margin-bottom:.35rem}
+.cf-name{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25;color:#111111;margin-bottom:.6rem}
+.cf-desc{font-family:var(--font-body);font-size:14.5px;font-weight:400;color:#777777;line-height:1.58;margin-bottom:1.1rem}
+.cf-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.2rem;margin-top:auto}
+.cf-tag{font-family:var(--font-body);font-size:8.5px;border:1px solid #E3E3E1;border-radius:8px;padding:3px 7px;color:#8a8a86;background:#fff;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.cf-arrow{font-family:var(--font-body);font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:5px;border:none;background:none;cursor:pointer;padding:0;transition:gap .2s}
+.cf-arrow:hover{gap:9px}
+
+@media(max-width:768px),(prefers-reduced-motion:reduce){
+ .cf-scroll-outer{height:auto !important}
+ .cf-scroll-sticky{position:static;overflow:visible}
+ .cf-row{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;transform:none !important}
+}
+
+/* ── Shared card system (About Us services grid) ── */
 .fn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:0}
-.fn-card{background:var(--white);padding:1.85rem;display:flex;flex-direction:column;position:relative;overflow:hidden;cursor:default;transition:background .2sborder-radius:8px;}
+.fn-card{background:var(--white);padding:1.85rem;display:flex;flex-direction:column;position:relative;overflow:hidden;cursor:default;transition:background .2s;border-radius:8px}
 .fn-card:hover{background:#fafafa}
 .fn-card:hover .fn-arrow{opacity:1;transform:translateX(0)}
-.fn-top-bar{height:3px;margin:-1.85rem -1.85rem 1.4rem;border-radius:8px; 0 0}
 .fn-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:.9rem;flex-shrink:0;box-shadow:0 6px 20px rgba(0,0,0,.15)}
 .fn-icon svg{width:26px;height:26px}
 .fn-num{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem}
@@ -261,6 +493,147 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 
 @media(max-width:1024px){.sol-grid{grid-template-columns:1fr}}
 @media(max-width:960px){.sol-card{padding:2.1rem 1.6rem}}
+
+/* ══════════════ SOLUTIONS — 3-card stacked deck (homepage only) ══════════════
+   Scoped to #solutions on purpose: .sol-list and .sol-check are SHARED with the
+   /home-2 and /marketing-solutions pages, which must keep their original styling.
+   #solutions exists only on the homepage, so nothing here can leak. */
+/* centered single-column track — never full-width, never a grid */
+#solutions .sol-grid{
+ display:flex;flex-direction:column;gap:34px;
+ max-width:1120px;margin-inline:auto;
+ background:transparent;border:none;border-radius:0;
+ overflow:visible;               /* any clipping here would kill sticky */
+ padding-bottom:8vh;             /* lets card 03 hold its stuck position briefly */
+}
+/* internal card layout: centred pill on top, then a two-column split —
+   left = title/tagline/description/metrics/CTA, right = the 4 checklist items.
+   Placement is explicit so no markup reordering is needed. */
+#solutions .sol-card{
+ position:sticky;                /* real sticky stack, not simulated overlap */
+ background:var(--white);
+ border:1px solid #E8E8E8;border-radius:28px;
+ padding:2.8rem 3rem 3rem;
+ overflow:visible;
+ box-shadow:0 -2px 16px rgba(0,0,0,.03),0 18px 44px rgba(0,0,0,.08);
+ transition:box-shadow .35s ease,border-color .35s ease;
+ /* opacity/scale are driven per-frame from scroll position in JS, so they are
+    deliberately NOT transitioned here — a transition would lag behind the scroll.
+    Shrinking from the top edge keeps the card's visible sliver steady as it recedes. */
+ transform-origin:top center;
+ will-change:opacity,transform;
+
+ display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ grid-template-rows:auto auto auto auto auto;
+ column-gap:3.2rem;
+ align-content:start;
+}
+#solutions .sol-head{grid-column:1/-1;justify-self:center;margin-bottom:2.4rem}
+#solutions .sol-name   {grid-column:1;grid-row:2}
+#solutions .sol-tag    {grid-column:1;grid-row:3}
+#solutions .sol-desc   {grid-column:1;grid-row:4}
+#solutions .sol-metrics{grid-column:1;grid-row:5}
+#solutions .sol-arrow  {grid-column:1;grid-row:6}
+#solutions .sol-list   {grid-column:2;grid-row:2/-1}
+
+/* pill badge: icon + label, centred at the top of the card */
+#solutions .sol-head{
+ display:inline-flex;align-items:center;gap:10px;
+ background:rgba(50,180,111,.09);
+ border:1px solid rgba(50,180,111,.18);
+ border-radius:999px;padding:9px 20px 9px 16px;
+}
+/* same icon artwork, restyled from a filled green tile to a green line mark on the pill.
+   The SVGs paint in white for the old dark tile, so recolour those fills/strokes. */
+#solutions .sol-icon{
+ width:22px;height:22px;min-width:22px;border-radius:0;margin:0;
+ background:none;box-shadow:none;
+}
+#solutions .sol-icon svg{width:22px;height:22px}
+#solutions .sol-icon svg [fill="white"]{fill:var(--blue)}
+#solutions .sol-icon svg [fill^="rgba(255,255,255"]{fill:rgba(50,180,111,.45)}
+#solutions .sol-icon svg [stroke^="rgba(255,255,255"]{stroke:rgba(50,180,111,.5)}
+#solutions .sol-label{
+ font-size:15px;font-weight:700;letter-spacing:-.01em;text-transform:none;
+ color:var(--blue);margin:0;white-space:nowrap;
+}
+
+/* left column */
+#solutions .sol-name{font-size:clamp(28px,3vw,40px);line-height:1.12;letter-spacing:-.025em;margin-bottom:.9rem}
+#solutions .sol-tag{font-size:16px;font-weight:600;color:var(--blue);line-height:1.45;margin-bottom:1.1rem}
+#solutions .sol-desc{font-size:14.5px;line-height:1.75;color:var(--g500);margin-bottom:1.8rem}
+/* metrics: no top rule — just the two figures split by a vertical divider */
+#solutions .sol-metrics{border-top:none;padding-top:0;gap:0;margin-bottom:1.8rem;align-items:center}
+#solutions .sol-metrics>div{padding-right:2rem}
+#solutions .sol-metrics>div+div{padding-right:0;padding-left:2rem;border-left:1px solid var(--border)}
+#solutions .sol-metric-v{font-size:34px;letter-spacing:-.03em}
+#solutions .sol-metric-l{font-size:12.5px;text-transform:none;letter-spacing:0;color:var(--g500);font-weight:500;margin-top:6px}
+/* CTA becomes a solid green pill button */
+#solutions .sol-arrow{
+ justify-self:start;text-transform:none;letter-spacing:-.01em;
+ font-size:15px;font-weight:700;color:#fff;
+ background:linear-gradient(135deg,#32b46f,#1c9558);
+ padding:14px 26px;border-radius:12px;
+ box-shadow:0 10px 24px rgba(50,180,111,.32);
+ transition:box-shadow .25s ease,transform .25s ease,gap .2s ease;
+}
+#solutions .sol-card:hover .sol-arrow{gap:10px}
+#solutions .sol-arrow:hover{box-shadow:0 14px 30px rgba(50,180,111,.42);transform:translateY(-2px)}
+
+/* right column: each checklist item is its own small card */
+#solutions .sol-list{display:flex;flex-direction:column;gap:14px;margin:0;align-self:stretch}
+#solutions .sol-list li{
+ background:var(--white);border:1px solid #EDEDEB;border-radius:16px;
+ padding:17px 20px;gap:15px;align-items:center;flex:1;
+ font-size:14.5px;font-weight:500;color:var(--g600);line-height:1.45;
+ box-shadow:0 4px 14px rgba(0,0,0,.035);
+}
+#solutions .sol-check{
+ width:30px;height:30px;min-width:30px;margin-top:0;
+ background:transparent;border:1.7px solid var(--blue);
+}
+#solutions .sol-check svg{width:13px;height:13px}
+/* Staggered sticky offsets (30px apart) are what produce the stack: each card parks
+   30px lower than the one before, so the previous card's top edge stays visible behind
+   it. top values clear the ~77px fixed nav. z-index brings each card forward in turn. */
+#solutions .sol-card:nth-child(1){top:96px;z-index:1}
+#solutions .sol-card:nth-child(2){top:126px;z-index:2}
+#solutions .sol-card:nth-child(3){top:156px;z-index:3}
+/* restrained hover — no transform, which would fight the sticky positioning */
+#solutions .sol-card:hover{
+ border-color:rgba(50,180,111,.45);
+ box-shadow:0 -2px 18px rgba(0,0,0,.03),0 26px 58px rgba(0,0,0,.11),0 0 0 1px rgba(50,180,111,.08);
+}
+
+@media(max-width:900px){
+ #solutions .sol-grid{max-width:90%}
+ /* collapse the two columns into one stacked flow */
+ #solutions .sol-card{grid-template-columns:minmax(0,1fr);column-gap:0;padding:2.2rem 1.9rem 2.4rem}
+ #solutions .sol-name,#solutions .sol-tag,#solutions .sol-desc,
+ #solutions .sol-metrics,#solutions .sol-arrow,#solutions .sol-list{grid-column:1}
+ #solutions .sol-name{grid-row:2}
+ #solutions .sol-tag{grid-row:3}
+ #solutions .sol-desc{grid-row:4}
+ #solutions .sol-list{grid-row:5;margin-bottom:1.6rem}
+ #solutions .sol-metrics{grid-row:6}
+ #solutions .sol-arrow{grid-row:7}
+ #solutions .sol-list li{flex:none}
+}
+@media(max-width:640px){
+ #solutions .sol-grid{max-width:none;width:calc(100% - 32px);gap:24px}
+ #solutions .sol-card{padding:1.9rem 1.4rem 2.1rem;border-radius:20px}
+ #solutions .sol-card:nth-child(1){top:88px}
+ #solutions .sol-card:nth-child(2){top:108px}
+ #solutions .sol-card:nth-child(3){top:128px}
+ #solutions .sol-head{margin-bottom:1.8rem}
+ #solutions .sol-list li{padding:14px 16px;font-size:13.5px;gap:12px}
+ #solutions .sol-metric-v{font-size:28px}
+ #solutions .sol-arrow{width:100%;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+ #solutions .sol-card{transition:none}
+}
 .fn-cta-card{background:var(--black) !important;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1.25rem;padding:2.5rem 2rem}
 .fn-cta-card:hover{background:#1a1a1c !important}
 
@@ -302,6 +675,115 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .ind-card.d2{transition-delay:.1s}
 .ind-card.d3{transition-delay:.2s}
 .ind-card{transition:opacity .65s ease, transform .65s ease, box-shadow .2s, transform .2s;}
+
+/* ══════════════ INDUSTRIES — sticky card stack (section 8) ══════════════
+   All six cards share one sticky offset so each pins at the SAME centred spot and the
+   next simply swaps in over it; z-index ascends so later cards come forward. The gap
+   between cards in normal flow is what supplies the scroll distance per reveal.
+   Per-card colour comes from --c1/--c2/--base set inline on each article. */
+#industries{background:#05070a;color:#fff;position:relative}
+#industries .sec-h{color:#fff}
+#industries .sec-sub{color:rgba(255,255,255,.55)}
+
+/* .ind-scroll is the tall scroll runway; .ind-viewport pins inside it and holds all six
+   cards absolutely centred on top of each other. JS then reads scroll progress and lays
+   them out as prev-left / active-centre / next-right via translate+scale+opacity. */
+.ind-scroll{position:relative;height:560vh}
+/* Pinned BELOW the 77px fixed nav (not at top:0) — otherwise the cards centre against
+   the full viewport and their top edge slides underneath the header. */
+.ind-viewport{
+ position:sticky;top:77px;height:calc(100vh - 77px);
+ display:flex;align-items:center;justify-content:center;
+ overflow:hidden;                       /* keeps far-off cards from spilling sideways */
+}
+.ind-scard{
+ position:absolute;top:50%;left:50%;
+ width:min(400px,84vw);
+ transform:translate(-50%,-50%);        /* JS overwrites with the full transform */
+ border-radius:26px;overflow:hidden;
+ border:1px solid rgba(255,255,255,.14);
+ background:
+  radial-gradient(125% 78% at 50% -6%,var(--c2) 0%,var(--c1) 34%,var(--base) 78%),
+  var(--base);
+ box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 60px -18px var(--c1);
+ will-change:transform,opacity;
+ backface-visibility:hidden;
+}
+/* min-height fills the card toward the bottom of the pinned viewport. The cap subtracts
+   the 77px nav plus breathing room, so the card can never grow into the header or past
+   the bottom edge. Content centres in whatever extra space is left. */
+.ind-scard-inner{
+ padding:1.9rem 1.6rem 2rem;
+ min-height:min(620px,calc(100vh - 155px));
+ display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+
+/* hero visual slot — the app-icon style tile from the reference */
+.ind-visual{
+ width:104px;height:104px;border-radius:24px;margin-bottom:1.3rem;
+ display:flex;align-items:center;justify-content:center;flex-shrink:0;
+ background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(0,0,0,.5));
+ border:1px solid rgba(255,255,255,.18);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 16px 34px rgba(0,0,0,.45);
+}
+.ind-visual svg{width:54px;height:54px;stroke:#fff;fill:none;opacity:.95}
+
+.ind-scard-title{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:#fff;margin-bottom:.3rem}
+.ind-scard-tag{font-family:var(--font-body);font-size:12.5px;font-weight:500;color:rgba(255,255,255,.6);margin-bottom:1.5rem}
+
+.ind-block{width:100%;text-align:left;margin-bottom:1.25rem}
+.ind-block-label{
+ display:flex;align-items:center;gap:10px;
+ font-family:var(--font-display);font-size:17px;font-weight:600;color:#fff;margin-bottom:.6rem;
+}
+.ind-rule{width:4px;height:18px;border-radius:2px;flex-shrink:0}
+.ind-rule-p{background:#ef4444}
+.ind-rule-s{background:#22c55e}
+.ind-line{
+ display:flex;align-items:flex-start;gap:10px;padding:4.5px 0 4.5px 13px;
+ font-family:var(--font-body);font-size:13.5px;font-weight:400;line-height:1.5;
+ color:rgba(255,255,255,.72);
+}
+.ind-line svg{flex-shrink:0;margin-top:3px;opacity:.75;width:13px;height:13px}
+
+.ind-scard-cta{
+ display:inline-flex;align-items:center;gap:8px;margin-top:.5rem;
+ font-family:var(--font-body);font-size:15px;font-weight:600;color:#fff;text-decoration:none;
+ transition:gap .2s ease;
+}
+.ind-scard-cta span{font-size:18px;line-height:1}
+.ind-scard-cta:hover{gap:14px}
+
+@media(max-width:700px){
+ .ind-scard{width:min(340px,88vw);border-radius:22px}
+ .ind-scard-inner{padding:1.4rem 1.2rem 1.5rem}
+}
+/* short windows: keep filling the height, but shrink the parts so nothing clips */
+@media(max-height:760px){
+ .ind-scard-inner{min-height:calc(100vh - 145px);padding:1.3rem 1.3rem 1.4rem}
+ .ind-visual{width:76px;height:76px;border-radius:19px;margin-bottom:.8rem}
+ .ind-visual svg{width:40px;height:40px}
+ .ind-scard-title{font-size:21px}
+ .ind-scard-tag{margin-bottom:.9rem;font-size:11.5px}
+ .ind-block{margin-bottom:.85rem}
+ .ind-block-label{font-size:15px;margin-bottom:.45rem}
+ .ind-line{font-size:12px;padding:3px 0 3px 11px}
+ .ind-scard-cta{font-size:13.5px;margin-top:.25rem}
+}
+@media(max-height:600px){
+ .ind-scard-inner{min-height:calc(100vh - 130px);padding:1.1rem 1.1rem 1.2rem}
+ .ind-visual{width:60px;height:60px;border-radius:16px;margin-bottom:.6rem}
+ .ind-visual svg{width:32px;height:32px}
+ .ind-scard-title{font-size:18px}
+ .ind-line{font-size:11px;padding:2px 0 2px 10px}
+ .ind-block{margin-bottom:.65rem}
+}
+/* no scroll-driven carousel under reduced motion — plain stacked cards, normal flow */
+@media(prefers-reduced-motion:reduce){
+ .ind-scroll{height:auto}
+ .ind-viewport{position:static;height:auto;display:flex;flex-direction:column;align-items:center;gap:26px;overflow:visible}
+ .ind-scard{position:static;transform:none !important;opacity:1 !important}
+}
 /* ── TECH ── */
 .tech-icon-new{
   width:56px;height:56px;border-radius:14px;
@@ -310,7 +792,64 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
   box-shadow:0 8px 24px rgba(0,0,0,.3);
 }
 #tech{background:var(--white)}
-.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;background:transparent;border:none;border-radius:0;overflow:visible}
+/* ══════ TECH — pinned horizontal card stack ══════
+   Section is padded by the global `section` rule; the pin lives inside it.
+   NOTE: no overflow:hidden anywhere on this chain — it would disable position:sticky. */
+#tech{position:relative;padding-top:0;padding-bottom:0}
+/* right-side 3D visual. Falls back to the plain dark section colour until the artwork
+   exists at /assets/img/tech-puzzle.webp, so nothing looks broken meanwhile. */
+#tech::before{
+ content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+ background-image:
+  linear-gradient(100deg,rgba(10,19,16,.97) 0%,rgba(10,19,16,.92) 34%,rgba(10,19,16,.6) 54%,rgba(10,19,16,.1) 78%,rgba(10,19,16,0) 92%),
+  url('/assets/img/tech-puzzle.webp');
+ /* `cover` (not a vh size) because this artwork is a full-bleed scene rather than a
+    subject on empty space — it fills the frame with no visible left edge to blend.
+    attachment:fixed sizes it against the VIEWPORT, so the very tall pinned track can't
+    blow it up, and it stays put while the cards animate over it. */
+ background-size:cover,cover;
+ background-position:center,center right;
+ background-repeat:no-repeat,no-repeat;
+ background-attachment:fixed,fixed;
+}
+.tech-track{position:relative;z-index:1}
+.tech-pin{
+ position:sticky;top:0;min-height:100vh;
+ display:flex;flex-direction:column;justify-content:center;
+ padding:6rem 0;
+}
+/* the six cards share one absolutely-positioned slot and are separated by transform */
+.tech-grid{
+ position:relative;display:block;
+ width:min(460px,100%);
+ height:var(--tech-card-h,330px);
+ background:transparent;border:none;border-radius:0;overflow:visible;
+ margin:0 0 2.5rem;
+}
+#tech .tech-card{
+ position:absolute;top:0;left:0;width:100%;
+ margin:0;will-change:transform,opacity;
+ transform-origin:center left;
+ /* transform/opacity are written per-frame from scroll position by JS, so they are
+    deliberately excluded from this transition (it would lag the scroll) */
+ transition:background .2s,border-color .2s;
+}
+#tech .tech-card:hover{transform:none}
+#tech .sec-h,#tech .sec-sub{text-align:left;margin-left:0;margin-right:0}
+#tech .eyebrow{justify-content:flex-start}
+#tech .sec-cta{justify-content:flex-start;margin-top:0}
+
+@media(max-width:900px){
+ /* fixed attachment is unreliable on iOS/mobile Chrome — fall back to scroll */
+ #tech::before{background-attachment:scroll,scroll;background-size:cover,cover;background-position:center,center right}
+ .tech-grid{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ /* no JS: fall back to the original readable grid */
+ .tech-pin{position:static;min-height:0;padding:0}
+ .tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;height:auto}
+ #tech .tech-card{position:relative;transform:none;opacity:1}
+}
 .tech-card{background:#12201a;padding:2.25rem 2rem;display:flex;flex-direction:column;gap:.85rem;transition:all .2s;border-radius:8px;border:1px solid rgba(255,255,255,.08);}
 .tech-card:hover{background:#1a2e24;border-color:rgba(255,255,255,.18);transform:translateY(-2px)}
 .tech-icon{width:50px;height:50px;border-radius:8px;display:flex;align-items:center;justify-content:center}
@@ -368,6 +907,76 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 
 /* ── WHY ── */
 #why{background:var(--bg)}
+/* ══════════════ WHY DRAWLEAD — centred editorial layout (section 9) ══════════════
+   Scoped under #why (homepage-only id). The legacy .why-card/.why-icon/.why-name/
+   .why-desc rules below are left untouched because the About Us page still uses them. */
+#why{background:#05070a;color:#fff;overflow:hidden}
+#why .eyebrow{margin-bottom:1.2rem}
+.why-h{
+ font-family:var(--font-display);
+ font-size:clamp(44px,7vw,92px);font-weight:800;letter-spacing:-.035em;line-height:1;
+ text-align:center;color:#fff;margin-bottom:0;
+}
+
+/* hero: fixed question mark with the magnet swinging beneath it */
+.why-hero{position:relative;display:flex;flex-direction:column;align-items:center;margin:.5rem auto 3rem;height:clamp(330px,44vw,520px)}
+.why-qmark{
+ font-family:var(--font-display);font-weight:800;line-height:1;
+ font-size:clamp(170px,25vw,320px);color:#33B470;
+ text-shadow:0 0 52px rgba(51,180,112,.55),0 0 130px rgba(51,180,112,.32);
+ user-select:none;
+}
+/* Rotates about its TOP edge — that pivot sits just under the question mark's dot, so
+   the string stays visually attached however far the magnet swings.
+   The offset tracks the glyph: with line-height:1 the '?' fills its font-size box, and
+   its dot bottoms out around 78% of that, hence 0.78 x the clamp values above. */
+.why-pendulum{
+ position:absolute;top:clamp(133px,19.5vw,250px);left:50%;
+ width:0;transform-origin:top center;transform:translateX(-50%) rotate(0deg);
+ display:flex;flex-direction:column;align-items:center;
+ will-change:transform;
+}
+.why-string{
+ display:block;width:1px;height:clamp(46px,6vw,74px);
+ background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.45));
+}
+/* kept deliberately smaller than the question mark */
+.why-magnet{display:block;width:clamp(74px,9.5vw,118px);height:clamp(74px,9.5vw,118px);filter:drop-shadow(0 10px 26px rgba(51,180,112,.35))}
+.why-magnet-img{width:100%;height:100%;display:block;object-fit:contain}
+.why-magnet-svg{display:none;width:100%;height:100%}
+.why-magnet.is-fallback .why-magnet-svg{display:block}
+
+.why-lead{
+ font-family:var(--font-body);font-size:clamp(16px,1.7vw,21px);font-weight:400;line-height:1.6;
+ color:rgba(255,255,255,.82);text-align:center;max-width:640px;margin:0 auto 4.5rem;
+}
+
+/* 3 + 2 layout: a 6-column grid where each item spans 2, and the last row is offset
+   by one column so the two items sit centred beneath the three above */
+.why-feats{display:grid;grid-template-columns:repeat(6,1fr);gap:2.6rem 2rem;max-width:1020px;margin:0 auto}
+.why-feat{grid-column:span 2;text-align:center;display:flex;flex-direction:column;align-items:center}
+.why-feat:nth-child(4){grid-column:2/4}
+.why-feat:nth-child(5){grid-column:4/6}
+.why-fico{width:34px;height:34px;color:rgba(255,255,255,.62);margin-bottom:1rem}
+.why-fico svg{width:100%;height:100%;display:block}
+.why-fname{font-family:var(--font-body);font-size:15.5px;font-weight:600;color:#fff;margin-bottom:.6rem}
+.why-fdesc{font-family:var(--font-body);font-size:13.5px;font-weight:400;line-height:1.65;color:rgba(255,255,255,.5);max-width:280px}
+
+@media(max-width:820px){
+ .why-hero{height:270px}
+ .why-feats{grid-template-columns:repeat(2,1fr);gap:2.2rem 1.6rem;max-width:600px}
+ .why-feat,.why-feat:nth-child(4),.why-feat:nth-child(5){grid-column:span 1}
+ .why-lead{margin-bottom:3rem}
+}
+@media(max-width:520px){
+ .why-hero{height:220px}
+ .why-feats{grid-template-columns:1fr;max-width:340px}
+ .why-feat,.why-feat:nth-child(4),.why-feat:nth-child(5){grid-column:span 1}
+}
+@media(prefers-reduced-motion:reduce){
+ .why-pendulum{transform:translateX(-50%) rotate(4deg) !important}
+}
+
 .why-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 .why-card{background:#12201a;border-radius:10px;border:1.5px solid rgba(255,255,255,.1);padding:1.85rem;display:flex;flex-direction:column;gap:.7rem;transition:all .2s;overflow:hidden;position:relative}
 .why-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.4);border-color:rgba(255,255,255,.25)}
@@ -494,7 +1103,16 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .logo img{height:38px}
   section{padding:5rem 1.5rem}
   #hero{padding:6rem 1.5rem 3rem}
-  .hero-h{font-size:clamp(48px,9vw,96px)}
+  .hero-grid{grid-template-columns:1fr;gap:3rem}
+  .hero-left{text-align:center}
+  .hero-eyebrow{justify-content:center}
+  .hero-h{font-size:clamp(42px,7vw,72px);text-align:center}
+  .hero-p{margin-left:auto;margin-right:auto}
+  .hero-btns{justify-content:center}
+  .hero-right{max-width:560px;margin:0 auto}
+  .ind-tabs{margin-left:auto;margin-right:auto}
+  .hero-stats{flex-wrap:wrap;gap:1.5rem;max-width:520px;margin:0 auto}
+  .hstat{flex:1 1 40%;border-right:none;justify-content:center}
   .fn-grid{grid-template-columns:repeat(2,1fr)}
   .tech-grid{grid-template-columns:repeat(2,1fr)}
   .cases-grid,.dash-grid{grid-template-columns:1fr}
@@ -503,17 +1121,15 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   footer{grid-template-columns:1fr;gap:2.5rem}
   #cta{padding:5rem 1.5rem}
   .cta-h{font-size:clamp(40px,8vw,72px)}
-  .hero-product-wrap{margin-top:4rem}
   .hpf-body{height:auto;flex-direction:column}
   .hpf-sidebar{width:100%;flex-direction:row;padding:10px;gap:8px;overflow-x:auto}
   .hpf-main{padding:12px}
   .hpf-kpi-row{grid-template-columns:repeat(2,1fr)}
   .hpf-charts-row{flex-direction:column}
-  .ind-tabs{flex-wrap:wrap}
-  .ind-tab{min-width:auto;flex:1 1 45%}
-  .hero-stats{max-width:100%;flex-wrap:wrap;gap:1.5rem}
-  .hstat{flex:1 1 40%;border-right:none;padding:0}
   .sec-h{font-size:clamp(28px,6vw,48px)}
+  /* ID-scoped so it outranks the homepage rule above (which has higher specificity) */
+  #functions .sec-h,#unify .sec-h,#method .sec-h,#solutions .sec-h,#tech .sec-h,
+  #cases .sec-h,#industries .sec-h,#why .sec-h,#dashboards .sec-h{font-size:clamp(26px,4.6vw,38px)}
 }
 
 /* ── MOBILE ── */
@@ -522,18 +1138,14 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .logo img{height:32px}
   section{padding:4rem 1.25rem}
   #hero{padding:5.5rem 1.25rem 3rem}
-  .hero-h{font-size:clamp(40px,11vw,72px);letter-spacing:-.03em;line-height:.92}
+  .hero-h{font-size:clamp(34px,10vw,52px);letter-spacing:-.02em;line-height:1.05}
   .hero-p{font-size:15px;max-width:100%}
   .hero-btns{flex-direction:column;align-items:center;width:100%}
   .hero-btns .btn{width:100%;justify-content:center}
   .fn-grid,.why-grid,.ind-grid{grid-template-columns:1fr}
+  .cf-card{width:280px;flex-basis:280px}
   .tech-grid{grid-template-columns:1fr}
   .cases-grid,.dash-grid{grid-template-columns:1fr}
-  .screen-s{display:none}
-  .screen-c{width:100% !important;max-width:100%}
-  .screens-row{flex-direction:column}
-  .hero-product-wrap{margin-top:3rem;overflow:hidden}
-  .hero-product-frame{border-radius:8px}
   .hpf-body{height:auto;flex-direction:column}
   .hpf-sidebar{display:none}
   .hpf-main{padding:12px}
@@ -541,14 +1153,15 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .hpf-charts-row{flex-direction:column;gap:8px}
   .hpf-chart-box{padding:10px}
   .ind-tabs{flex-wrap:wrap;width:100%;max-width:100%}
-  .ind-tab{flex:1 1 48%;min-width:120px;padding:10px 12px}
-  .ind-tab .tab-sub{display:none}
-  #tabProgressWrap{min-width:100% !important;width:100% !important}
+  .ind-tab{flex:1 1 30%}
+  .dw-kpis{grid-template-columns:repeat(2,1fr)}
   .hero-stats{flex-wrap:wrap;gap:1.25rem;justify-content:center;max-width:100%}
-  .hstat{flex:1 1 40%;border-right:none;border-bottom:1px solid var(--border);padding-bottom:1rem}
+  .hstat{flex:1 1 40%;border-right:none;border-bottom:1px solid var(--border);padding-bottom:1rem;justify-content:center}
   .hstat:last-child,.hstat:nth-child(2n){border-bottom:none}
-  .hstat-n{font-size:36px}
+  .hstat-n{font-size:24px}
   .sec-h{font-size:clamp(26px,7vw,40px);letter-spacing:-.02em}
+  #functions .sec-h,#unify .sec-h,#method .sec-h,#solutions .sec-h,#tech .sec-h,
+  #cases .sec-h,#industries .sec-h,#why .sec-h,#dashboards .sec-h{font-size:clamp(23px,5.6vw,32px)}
   .sec-sub{font-size:14px}
   .sec-cta{flex-direction:column;align-items:center}
   .sec-cta .btn{width:100%;max-width:360px;justify-content:center}
@@ -563,7 +1176,6 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .cs-body{height:calc(160px - 28px)}
   .mq-wrap{display:none}
   .fn-cta-card{padding:2rem 1.5rem}
-  .hero-float{display:none}
   .dash-card{margin:0}
 }
 
@@ -1090,73 +1702,68 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
  .wa-fab{right:16px;bottom:16px}
 }
 
-/* ══════════════════ APP CHAOS → SMART BOARD ══════════════════ */
-#unify{background:var(--bg)}
-.unify-visual{position:relative;width:100%;max-width:640px;aspect-ratio:1;margin:0 auto 2.5rem}
-
-.unify-glow{
- position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
- width:78%;height:78%;border-radius:50%;
- background:radial-gradient(circle,rgba(50,180,111,.14) 0%,rgba(50,180,111,.05) 55%,transparent 75%);
- pointer-events:none;
+/* ══════════════════ PHYSICS TAG STAGE (section 3) ══════════════════
+   Pills are real DOM nodes (so they keep CSS gradients/blur/shadows); Matter.js runs the
+   rigid-body simulation and each frame writes translate+rotate onto them. The stage
+   clips its own bounds and the walls are built to match, so nothing escapes. */
+.phys-stage{
+ position:relative;overflow:hidden;
+ width:100%;max-width:1080px;height:520px;margin:0 auto 2.5rem;
+ background:radial-gradient(120% 90% at 50% 0%,#141b1f 0%,#0b1013 55%,#06090b 100%);
+ border:1px solid rgba(255,255,255,.07);border-radius:26px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 30px 70px rgba(0,0,0,.38);
+ touch-action:pan-y;
+}
+/* faint green floor bloom so the pile has something to settle onto */
+.phys-stage::after{
+ content:'';position:absolute;left:0;right:0;bottom:0;height:38%;pointer-events:none;
+ background:radial-gradient(70% 100% at 50% 100%,rgba(51,180,112,.16) 0%,transparent 72%);
+}
+.phys-pill{
+ position:absolute;top:0;left:0;
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:14px 26px;border-radius:999px;white-space:nowrap;
+ font-family:var(--font-body);font-size:15px;font-weight:700;letter-spacing:-.01em;
+ will-change:transform;user-select:none;-webkit-user-select:none;
+ backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+ z-index:2;
+ /* hidden until the section scrolls into view; JS adds .is-running to the stage and all
+    8 fade in together at the instant the drop begins */
+ opacity:0;transition:opacity .28s ease;
+}
+.phys-stage.is-running .phys-pill{opacity:1}
+.phys-pill[data-variant="green"]{
+ background:linear-gradient(135deg,#33B470,#1d8b53);color:#fff;
+ box-shadow:0 10px 26px rgba(51,180,112,.32),inset 0 1px 0 rgba(255,255,255,.28);
+}
+.phys-pill[data-variant="dark"]{
+ background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.14);
+ box-shadow:0 10px 26px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.phys-pill[data-variant="light"]{
+ background:linear-gradient(135deg,#f4f6f5,#dfe5e2);color:#080c0e;
+ box-shadow:0 10px 26px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.7);
 }
 
-.unify-ring-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.unify-ring{fill:none;stroke:#32b46f;stroke-width:.4;stroke-dasharray:1.6 3.2;stroke-linecap:round;opacity:.5;animation:unify-ring-flow 40s linear infinite}
-@keyframes unify-ring-flow{to{stroke-dashoffset:-200}}
-
-.unify-card{
- position:absolute;transform:translate(-50%,-50%);
- display:flex;flex-direction:column;align-items:center;gap:9px;
- background:var(--white);border-radius:18px;width:92px;
- padding:14px 10px 12px;box-shadow:0 14px 30px rgba(0,0,0,.1);
- opacity:0;z-index:2;
- animation:unify-card-in .5s ease forwards,unify-float 4.5s ease-in-out infinite;
-}
-.unify-card-icon{
- width:42px;height:42px;border-radius:13px;flex-shrink:0;
- background:linear-gradient(135deg,#32b46f,#14855a);
- display:flex;align-items:center;justify-content:center;
- font-size:20px;box-shadow:0 8px 18px rgba(50,180,111,.35);
-}
-.unify-card-label{font-size:10px;font-weight:800;color:var(--g600);text-align:center;letter-spacing:.01em;white-space:nowrap;line-height:1.2}
-@keyframes unify-card-in{to{opacity:1}}
-@keyframes unify-float{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-7px)}}
-
-.unify-board-glow{
- position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
- width:250px;height:250px;border-radius:50%;background:var(--white);
- box-shadow:0 30px 70px rgba(0,0,0,.1);z-index:1;
-}
-.unify-board{
- position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
- width:250px;background:var(--white);border-radius:26px;
- overflow:hidden;z-index:2;
-}
-.unify-board-bar{display:flex;align-items:center;gap:6px;padding:11px 14px 9px;background:var(--white)}
-.unify-board-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.unify-board-title{margin-left:4px;font-size:9.5px;font-weight:700;color:var(--g500);letter-spacing:.03em;white-space:nowrap}
-.unify-board-body{padding:6px 16px 18px}
-
+/* still used by the #method section's "Understand → Measure → Automate → Scale" line */
 .unify-stat{text-align:center;font-size:15px;font-weight:700;color:var(--g600)}
 .unify-stat .g2{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:22px;font-weight:800}
 
-@media(max-width:680px){
- .unify-visual{max-width:360px}
- .unify-card{width:66px;padding:9px 6px 8px;border-radius:13px;gap:5px}
- .unify-card-icon{width:30px;height:30px;border-radius:9px}
- .unify-card-icon svg{width:15px;height:15px}
- .unify-card-label{font-size:7.5px}
- .unify-board,.unify-board-glow{width:184px}
- .unify-board{border-radius:20px}
- .unify-board-body{padding:4px 11px 12px}
- .unify-board-bar{padding:8px 11px 6px}
- .unify-board-title{font-size:8px}
+@media(max-width:900px){
+ .phys-stage{height:440px;border-radius:22px}
+ .phys-pill{padding:12px 20px;font-size:13.5px}
+}
+@media(max-width:560px){
+ .phys-stage{height:380px;border-radius:18px}
+ .phys-pill{padding:10px 16px;font-size:12px}
  .unify-stat{font-size:13px}
 }
+/* no simulation under reduced motion — fall back to a plain centred cluster.
+   opacity must be forced back on here: JS never runs, so .is-running is never added
+   and the pills would otherwise stay permanently invisible. */
 @media(prefers-reduced-motion:reduce){
- .unify-card{animation-duration:.01s,.01s;animation-iteration-count:1,1}
- .unify-ring{animation:none}
+ .phys-stage{height:auto;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;padding:3rem 2rem}
+ .phys-pill{position:static;transform:none !important;opacity:1 !important;transition:none}
 }
 
 /* ══════════════════ NAV MEGA MENU ══════════════════ */
