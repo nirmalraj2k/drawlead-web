@@ -4,15 +4,6 @@ include __DIR__ . '/partials/nav.php';
 ?>
 
 <section id="hero">
- <div class="grid-bg hero-grid-bg" style="opacity:.4"></div>
- <div class="grid-energy" aria-hidden="true">
-  <span class="ge-path ge-h ge-p1"></span>
-  <span class="ge-path ge-h ge-p2"></span>
-  <span class="ge-path ge-v ge-p3"></span>
-  <span class="ge-path ge-v ge-p4"></span>
- </div>
- <div class="hero-glow-r"></div>
- <div class="hero-glow-l"></div>
 
  <div class="hero-grid">
   <!-- LEFT — communication & conversion -->
@@ -54,8 +45,7 @@ include __DIR__ . '/partials/nav.php';
     </div>
    </div>
   </div>
-
-  <!-- RIGHT — product proof: one dashboard window, auto-rotating through industries -->
+  <!-- RIGHT — live industry dashboard, auto-rotating -->
   <div class="hero-right">
    <div class="ind-tabs" id="indTabs">
     <button class="ind-tab active" data-idx="0" onclick="switchDash(0)">Ecommerce</button>
@@ -256,7 +246,7 @@ include __DIR__ . '/partials/nav.php';
 
  <div class="fn-grid">
  <!-- 01 Audit -->
- <div class="fn-card rv d1">
+ <div class="fn-card">
   <div class="fn-icon" style="background:linear-gradient(135deg,#32b46f,#14855a);box-shadow:0 6px 20px rgba(0,0,0,.2)">
    <svg width="26" height="26" viewBox="0 0 40 40" fill="none"><rect x="6" y="4" width="20" height="26" rx="2" fill="rgba(255,255,255,.55)"/><path d="M11 12 L21 12 M11 17 L18 17" stroke="rgba(20,133,90,.7)" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="26" r="8" fill="none" stroke="white" stroke-width="2.5"/><path d="M30 32 L36 38" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
   </div>
@@ -265,7 +255,7 @@ include __DIR__ . '/partials/nav.php';
   <div class="fn-tags"><span class="fn-tag">Workflows</span><span class="fn-tag">Bottlenecks</span></div>
  </div>
  <!-- 02 Measure -->
- <div class="fn-card rv d2">
+ <div class="fn-card">
   <div class="fn-icon" style="background:linear-gradient(135deg,#32b46f,#14855a);box-shadow:0 6px 20px rgba(0,0,0,.2)">
    <svg width="26" height="26" viewBox="0 0 40 40" fill="none"><path d="M6 26 A14 14 0 0 1 34 26" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="3" stroke-linecap="round"/><path d="M6 26 A14 14 0 0 1 24 13" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/><line x1="20" y1="26" x2="27" y2="17" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="20" cy="26" r="2.5" fill="white"/></svg>
   </div>
@@ -274,7 +264,7 @@ include __DIR__ . '/partials/nav.php';
   <div class="fn-tags"><span class="fn-tag">KPIs</span><span class="fn-tag">Dashboards</span></div>
  </div>
  <!-- 03 Automate -->
- <div class="fn-card rv d3">
+ <div class="fn-card">
   <div class="fn-icon" style="background:linear-gradient(135deg,#32b46f,#14855a);box-shadow:0 6px 20px rgba(0,0,0,.2)">
    <svg width="26" height="26" viewBox="0 0 40 40" fill="none"><path d="M22 3 L9 21 L18 21 L16 37 L33 16 L23 16 Z" fill="white"/><path d="M22 3 L9 21 L18 21 L17 27" fill="none" stroke="rgba(20,133,90,.5)" stroke-width="1.6" stroke-linejoin="round"/></svg>
   </div>
@@ -283,7 +273,7 @@ include __DIR__ . '/partials/nav.php';
   <div class="fn-tags"><span class="fn-tag">Approvals</span><span class="fn-tag">Follow-ups</span></div>
  </div>
  <!-- 04 Scale -->
- <div class="fn-card rv d4">
+ <div class="fn-card">
   <div class="fn-icon" style="background:linear-gradient(135deg,#32b46f,#14855a);box-shadow:0 6px 20px rgba(0,0,0,.2)">
    <svg width="26" height="26" viewBox="0 0 40 40" fill="none"><rect x="14" y="14" width="12" height="12" rx="2" fill="rgba(255,255,255,.5)"/><path d="M24 4 L36 4 L36 16" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M36 4 L24 16" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M16 36 L4 36 L4 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 36 L16 24" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
   </div>
@@ -310,7 +300,7 @@ include __DIR__ . '/partials/nav.php';
  <div class="sol-grid">
 
  <!-- Custom Operational Solutions (ERP) -->
- <div class="sol-card rv d1">
+ <div class="sol-card">
   <div class="sol-head">
    <div class="sol-icon">
    <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="5" y="5" width="13" height="13" rx="2.5" fill="white"/><rect x="22" y="5" width="13" height="13" rx="2.5" fill="rgba(255,255,255,.6)"/><rect x="5" y="22" width="13" height="13" rx="2.5" fill="rgba(255,255,255,.6)"/><rect x="22" y="22" width="13" height="13" rx="2.5" fill="rgba(255,255,255,.85)"/><path d="M18 11.5 L22 11.5 M11.5 18 L11.5 22 M28.5 18 L28.5 22 M18 28.5 L22 28.5" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round"/></svg>
@@ -334,7 +324,7 @@ include __DIR__ . '/partials/nav.php';
  </div>
 
  <!-- Ecommerce Solutions -->
- <div class="sol-card rv d2">
+ <div class="sol-card">
   <div class="sol-head">
    <div class="sol-icon">
    <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><path d="M4 10 L10 10 L14 27 L32 27" stroke="rgba(255,255,255,.55)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 14 L35 14 L32 24 L13.8 24 Z" fill="white"/><circle cx="16" cy="33" r="3" fill="rgba(255,255,255,.85)"/><circle cx="30" cy="33" r="3" fill="rgba(255,255,255,.85)"/></svg>
@@ -358,7 +348,7 @@ include __DIR__ . '/partials/nav.php';
  </div>
 
  <!-- Marketing Solutions -->
- <div class="sol-card rv d3">
+ <div class="sol-card">
   <div class="sol-head">
    <div class="sol-icon">
    <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><path d="M4 6 L36 6 L24 21 L24 34 L16 30 L16 21 Z" fill="white"/><path d="M16 21 L24 21 L24 27 L16 27 Z" fill="rgba(255,255,255,.55)"/><path d="M4 6 L36 6 L31 12 L9 12 Z" fill="rgba(255,255,255,.6)"/></svg>
@@ -523,40 +513,13 @@ include __DIR__ . '/partials/nav.php';
  <div class="eyebrow rv"><div class="eyebrow-line" style="background:#32b46f"></div><span class="eyebrow-text" style="color:#32b46f">Case Studies</span><div class="eyebrow-line" style="background:#32b46f"></div></div>
  <h2 class="sec-h rv"><span style="color:#32b46f">Real Results</span> for <span class="fade">Real Businesses</span></h2>
  <p class="sec-sub rv">How Drawlead transforms operations across industries with measurable outcomes.</p>
- <div class="cases-grid">
- <div class="case-card rv d1">
-  <div class="case-screen">
-    <div class="cs-bar"><div class="cs-dot" style="background:#ff5f57"></div><div class="cs-dot" style="background:#ffbd2e"></div><div class="cs-dot" style="background:#28c840"></div><div class="cs-title">Construction ERP — Drawlead</div></div>
-    <div class="cs-body">
-      <div class="cs-sidebar">
-        <div style="font-size:7px;font-weight:800;color:#32b46f;margin-bottom:4px">Drawlead</div>
-        <div class="cs-nav-item active"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-      </div>
-      <div class="cs-main">
-        <div class="cs-krow">
-          <div class="cs-k"><div class="cs-kv">12</div><div class="cs-kl">Sites</div></div>
-          <div class="cs-k"><div class="cs-kv" style="color:#14855a">₹8.4Cr</div><div class="cs-kl">Projects</div></div>
-          <div class="cs-k"><div class="cs-kv">247</div><div class="cs-kl">Workers</div></div>
-        </div>
-        <div class="cs-lbl">Budget vs Actual</div>
-        <div class="cs-chart">
-          <div class="cs-hbar-r"><span>Site A</span><div class="cs-track2"><div class="cs-fill2" style="width:82%"></div></div><span>82%</span></div>
-          <div class="cs-hbar-r"><span>Site B</span><div class="cs-track2"><div class="cs-fill2" style="width:95%;background:#14855a"></div></div><span style="color:#14855a">95%⚠</span></div>
-          <div class="cs-hbar-r"><span>Site C</span><div class="cs-track2"><div class="cs-fill2" style="width:61%"></div></div><span>61%</span></div>
-        </div>
-        <div class="cs-list-r">
-          <div class="cs-list-item"><div class="cs-dot2"></div>Contractor payment approved<span class="cs-badge-s">Done</span></div>
-          <div class="cs-list-item"><div class="cs-dot2" style="background:#14855a"></div>Steel reorder triggered<span class="cs-badge-s" style="background:rgba(20,133,90,.1);color:#14855a">Auto</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="cases-scroll" id="casesScroll">
+  <div class="cases-pin">
+   <div class="cases-track" id="casesTrack">
+ <div class="case-card" style="--acc:#38B976;--acc2:#9BE3C0;--atm:rgba(56,185,118,.18)">
+  <div class="case-screen"><span class="case-orb" aria-hidden="true"></span></div>
   <div class="case-body">
-    <span class="case-tag" style="background:rgba(50,180,111,.08);color:#32b46f;border:1px solid rgba(50,180,111,.2)">Construction &amp; Real Estate</span>
+    <span class="case-tag">Construction &amp; Real Estate</span>
     <div class="case-title">Construction ERP Solution</div>
     <ul class="case-list">
       <li>Better operational visibility across all project sites</li>
@@ -566,41 +529,10 @@ include __DIR__ . '/partials/nav.php';
     <button type="button" data-book class="btn btn-outline2 btn-sm" style="margin-top:1.1rem;align-self:flex-start">Read Case Study →</button>
   </div>
  </div>
- <div class="case-card rv d2">
-  <div class="case-screen">
-    <div class="cs-bar"><div class="cs-dot" style="background:#ff5f57"></div><div class="cs-dot" style="background:#ffbd2e"></div><div class="cs-dot" style="background:#28c840"></div><div class="cs-title">Clinic OS — Drawlead</div></div>
-    <div class="cs-body">
-      <div class="cs-sidebar">
-        <div style="font-size:7px;font-weight:800;color:#32b46f;margin-bottom:4px">Drawlead</div>
-        <div class="cs-nav-item active"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-      </div>
-      <div class="cs-main">
-        <div class="cs-krow">
-          <div class="cs-k"><div class="cs-kv">6</div><div class="cs-kl">Branches</div></div>
-          <div class="cs-k"><div class="cs-kv" style="color:#14855a">284</div><div class="cs-kl">Patients</div></div>
-          <div class="cs-k"><div class="cs-kv">₹42L</div><div class="cs-kl">Revenue</div></div>
-        </div>
-        <div class="cs-lbl">Today's Appointments</div>
-        <div class="cs-bars-row">
-          <div class="cs-bar-i" style="height:55%"></div>
-          <div class="cs-bar-i" style="height:72%"></div>
-          <div class="cs-bar-i" style="height:60%"></div>
-          <div class="cs-bar-i" style="height:88%"></div>
-          <div class="cs-bar-i cs-bar-hi" style="height:95%"></div>
-          <div class="cs-bar-i" style="height:70%"></div>
-        </div>
-        <div class="cs-list-r">
-          <div class="cs-list-item"><div class="cs-dot2"></div>Chennai Branch — 48 appts<span class="cs-badge-s">Full</span></div>
-          <div class="cs-list-item"><div class="cs-dot2" style="background:#14855a"></div>Billing processed — ₹12L<span class="cs-badge-s" style="background:rgba(20,133,90,.1);color:#14855a">Done</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="case-card" style="--acc:#2FB5AE;--acc2:#A8E6E2;--atm:rgba(47,181,174,.18)">
+  <div class="case-screen"><span class="case-orb" aria-hidden="true"></span></div>
   <div class="case-body">
-    <span class="case-tag" style="background:rgba(50,180,111,.08);color:#32b46f;border:1px solid rgba(50,180,111,.2)">Healthcare &amp; Wellness</span>
+    <span class="case-tag">Healthcare &amp; Wellness</span>
     <div class="case-title">Multi-Brand Physiotherapy Management</div>
     <ul class="case-list">
       <li>Streamlined clinic workflows across branches</li>
@@ -610,38 +542,10 @@ include __DIR__ . '/partials/nav.php';
     <button type="button" data-book class="btn btn-outline2 btn-sm" style="margin-top:1.1rem;align-self:flex-start">Read Case Study →</button>
   </div>
  </div>
- <div class="case-card rv d3">
-  <div class="case-screen">
-    <div class="cs-bar"><div class="cs-dot" style="background:#ff5f57"></div><div class="cs-dot" style="background:#ffbd2e"></div><div class="cs-dot" style="background:#28c840"></div><div class="cs-title">Agency OS — Drawlead</div></div>
-    <div class="cs-body">
-      <div class="cs-sidebar">
-        <div style="font-size:7px;font-weight:800;color:#32b46f;margin-bottom:4px">Drawlead</div>
-        <div class="cs-nav-item active"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-        <div class="cs-nav-item"></div>
-      </div>
-      <div class="cs-main">
-        <div class="cs-krow">
-          <div class="cs-k"><div class="cs-kv">24</div><div class="cs-kl">Clients</div></div>
-          <div class="cs-k"><div class="cs-kv" style="color:#14855a">↑ 38%</div><div class="cs-kl">Output</div></div>
-          <div class="cs-k"><div class="cs-kv">₹1.8Cr</div><div class="cs-kl">Billed</div></div>
-        </div>
-        <div class="cs-lbl">Project Delivery Rate</div>
-        <div class="cs-funnel">
-          <div class="cs-fbar2" style="width:100%;background:rgba(50,180,111,.1)">Active · 24 projects</div>
-          <div class="cs-fbar2" style="width:75%;background:rgba(50,180,111,.18)">In Review · 18</div>
-          <div class="cs-fbar2" style="width:58%;background:#32b46f;color:#fff">Delivered · 14</div>
-        </div>
-        <div class="cs-list-r">
-          <div class="cs-list-item"><div class="cs-dot2"></div>Team productivity up 38%<span class="cs-badge-s">AI</span></div>
-          <div class="cs-list-item"><div class="cs-dot2" style="background:#14855a"></div>Client NPS score 94<span class="cs-badge-s" style="background:rgba(20,133,90,.1);color:#14855a">↑</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="case-card" style="--acc:#8B5CF6;--acc2:#CDBEFB;--atm:rgba(139,92,246,.16)">
+  <div class="case-screen"><span class="case-orb" aria-hidden="true"></span></div>
   <div class="case-body">
-    <span class="case-tag" style="background:rgba(50,180,111,.08);color:#14855a;border:1px solid rgba(20,133,90,.2)">Marketing Agencies</span>
+    <span class="case-tag">Marketing Agencies</span>
     <div class="case-title">Agency OS</div>
     <ul class="case-list">
       <li>Improved team collaboration and project delivery</li>
@@ -651,7 +555,9 @@ include __DIR__ . '/partials/nav.php';
     <button type="button" data-book class="btn btn-outline2 btn-sm" style="margin-top:1.1rem;align-self:flex-start">Read Case Study →</button>
   </div>
  </div>
- </div>
+   </div><!-- /cases-track -->
+  </div>
+ </div><!-- /cases-scroll -->
  <div class="sec-cta rv">
  <button type="button" data-book class="btn btn-black">Start Your Success Story →</button>
  </div>
@@ -978,18 +884,56 @@ foreach (industries_ordered() as $entry) { $indByKey[$entry['key']] = $entry['in
  </div>
 </section>
 
-<!-- ═══════════════════ CTA ═══════════════════ -->
-<section id="cta">
- <div class="cta-grid-bg"></div>
- <div class="cta-glow"></div>
 
- <h2 class="cta-h rv">Build your<br><span class="fade">business</span> <span class="gr">ERP</span><br><span class="gr2">OS</span> with <span class="gr3">AI</span></h2>
- <p class="cta-p rv">Digitize, automate, and scale with Drawlead. Start with a free consultation — no commitment needed.</p>
- <div class="cta-btns rv">
- <button type="button" data-book class="cta-btn-w">Schedule Free Consultation →</button>
- <button type="button" data-book class="cta-btn-g">Book a Product Demo</button>
+<?php
+// ═══════ CTA INTRO — scroll-driven, per-character spring physics ═══════
+// Every character is emitted as its own inline-block span so the JS can give each one
+// independent position, velocity, spring and damping. Words listed in 'green' get the
+// brand accent. This replaces the previous whole-line marquee entirely.
+$ciLines = [
+ ['text' => 'Ready to Transform', 'green' => [],      'dir' => -1, 'travel' => 1.30],
+ ['text' => 'Your Business ERP',  'green' => ['ERP'], 'dir' =>  1, 'travel' => 1.00],
+ ['text' => 'with AI?',           'green' => ['AI?'], 'dir' => -1, 'travel' => 1.45],
+];
+?>
+<section id="cta-intro">
+ <div class="ci-pin">
+  <?php foreach ($ciLines as $li => $line): ?>
+  <div class="ci-line" data-dir="<?= $line['dir'] ?>" data-travel="<?= $line['travel'] ?>" aria-label="<?= h($line['text']) ?>">
+   <?php
+   $words = explode(' ', $line['text']);
+   foreach ($words as $wi => $word):
+    $isGreen = in_array($word, $line['green'], true);
+    // split on characters (mb-safe) so each glyph animates on its own
+    $chars = preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY);
+    foreach ($chars as $ch):
+     ?><span class="ci-ch<?= $isGreen ? ' ci-g' : '' ?>" aria-hidden="true"><?= h($ch) ?></span><?php
+    endforeach;
+    if ($wi < count($words) - 1):
+     ?><span class="ci-ch ci-sp" aria-hidden="true">&nbsp;</span><?php
+    endif;
+   endforeach;
+   ?>
+  </div>
+  <?php endforeach; ?>
  </div>
- <div class="cta-note rv">செயலை மாற்றும் · Intelligent Operating System · Secure · Scalable · Future-Ready</div>
+</section>
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section id="cta" class="cta-framed">
+ <!-- dark rounded container, inset from the page so white space frames it on all sides -->
+ <div class="cta-card">
+  <div class="cta-grid-bg"></div>
+  <div class="cta-glow"></div>
+
+  <div class="cta-eyebrow rv"><span class="cta-eyebrow-dot"></span>Start Your ERP Journey</div>
+  <h2 class="cta-h rv">Build your<br><span class="fade">business</span> <span class="gr">ERP</span><br><span class="gr2">OS</span> with <span class="gr3">AI</span></h2>
+  <p class="cta-p rv">Digitize, automate, and scale with Drawlead. Start with a free consultation — no commitment needed.</p>
+  <div class="cta-btns rv">
+  <button type="button" data-book class="cta-btn-w">Schedule Free Consultation →</button>
+  <button type="button" data-book class="cta-btn-g">Book a Product Demo</button>
+  </div>
+  <div class="cta-note rv">செயலை மாற்றும் · Intelligent Operating System · Secure · Scalable · Future-Ready</div>
+ </div>
 </section>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
@@ -1165,8 +1109,21 @@ if(!reduceMotion){
 
   const dimTo  = opts.dimTo  !== undefined ? opts.dimTo  : 0.30;
   const shrink = opts.shrink !== undefined ? opts.shrink : 0.04;
-  const blurTo = opts.blurTo !== undefined ? opts.blurTo : 0;
   let ticking = false;
+
+  // PERF: stuckTop + card height are cached on resize. Reading getComputedStyle()
+  // and offsetHeight per card per frame forced a synchronous reflow every frame,
+  // which was a major source of scroll jank across the whole page.
+  const geo = [];
+  function measure(){
+   geo.length = 0;
+   for(let i = 0; i < cards.length; i++){
+    geo.push({
+     top: parseFloat(getComputedStyle(cards[i]).top) || 0,
+     h:   cards[i].offsetHeight
+    });
+   }
+  }
 
   function update(){
    ticking = false;
@@ -1179,20 +1136,21 @@ if(!reduceMotion){
     // the final card is always the foreground one — never dim it
     if(!next){ card.style.opacity = ''; card.style.transform = ''; card.style.filter = ''; continue; }
 
-    const stuckTop = parseFloat(getComputedStyle(card).top) || 0;
+    const g        = geo[i] || { top:0, h:0 };
     const nextTop  = next.getBoundingClientRect().top;
 
     // fade window: from "next card's top edge reaches this card's bottom"
     //              to   "next card has almost fully covered this card"
-    const fadeStart = stuckTop + card.offsetHeight;
-    const fadeEnd   = stuckTop + 28;
+    const fadeStart = g.top + g.h;
+    const fadeEnd   = g.top + 28;
 
     let p = (fadeStart - nextTop) / (fadeStart - fadeEnd);
     p = p < 0 ? 0 : (p > 1 ? 1 : p);
 
     card.style.opacity   = String(1 - p * (1 - dimTo));
     card.style.transform = 'scale(' + (1 - p * shrink) + ')';
-    if(blurTo) card.style.filter = p > 0.01 ? 'blur(' + (p * blurTo).toFixed(2) + 'px)' : '';
+    // PERF: animated blur() forces a full repaint of the card every frame. The scale
+    // + opacity fade already reads as "receding", so the blur is not worth its cost.
 
     if(p > 0.5) active = i + 1;   // once a card is mostly covered, the next one leads
    }
@@ -1205,9 +1163,10 @@ if(!reduceMotion){
 
   function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
 
+  measure();
   update();
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', function(){ measure(); onScroll(); });
  }
 
  if(reduce) return;
@@ -1285,7 +1244,7 @@ if(!reduceMotion){
  // strengthening as the active stage advances (CSS reads [data-stage]).
  const methodSection = document.getElementById('method');
  initStickyStack('#method .fn-card', {
-  dimTo: 0.25, shrink: 0.05, blurTo: 2,
+  dimTo: 0.25, shrink: 0.05,
   onStage: function(i){ if(methodSection) methodSection.dataset.stage = i; }
  });
 
@@ -1492,64 +1451,328 @@ if(!reduceMotion){
 })();
 
 
-// ── Section 9 — hanging magnet pendulum ──
-// Real angular motion: gravity supplies a restoring torque (-k·sinθ), velocity carries
-// momentum, and damping bleeds energy so it settles gradually instead of stopping dead.
-// Only the magnet assembly rotates — the question mark itself never moves. Because the
-// string and magnet are both children of the rotating element, the string stays attached.
+// ── Section 9 — hanging magnet: real-time cursor-driven pendulum physics ──
+// A rigid pendulum pivoting at the string's top anchor. Every frame we integrate:
+//   gravity restoring torque + cursor repulsion torque - damping
+// Crucially the cursor force is evaluated in the ANIMATION LOOP from the last known
+// pointer position — not inside the mousemove handler — so a stationary cursor keeps
+// pushing the magnet and it settles into a deflected equilibrium, rather than the force
+// vanishing the moment the mouse stops moving.
 (function(){
- const pend = document.getElementById('whyPendulum');
- if(!pend) return;
+ const pend   = document.getElementById('whyPendulum');
+ const hero   = document.querySelector('#why .why-hero');
+ const magnet = document.querySelector('#why .why-magnet');
+ const string = document.querySelector('#why .why-string');
+ if(!pend || !hero || !magnet || !string) return;
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
- let theta = 0.10;      // angle in radians (0 = straight down)
- let omega = 0;         // angular velocity
- const K = 26;          // restoring strength — higher = faster swing
- const DAMP = 0.992;    // per-step energy loss; <1 so it always settles
- const MAX = 0.62;      // clamp so it never flails
+ // touch devices have no hover cursor — leave the magnet at a gentle idle sway
+ const coarse = window.matchMedia('(pointer: coarse)').matches;
 
- let mx = -9999, my = -9999, lastMx = -9999, near = false;
+ // ── state ──
+ let theta = 0.08;   // arm angle, radians (0 = hanging straight down)
+ let omega = 0;      // angular velocity
+ let tilt  = 0;      // magnet's own rotation, lags the arm for a bit of extra weight
+ let stretch = 1;    // string stretch under load
+
+ // ── tuning ──
+ const G      = 30;    // gravity restoring strength
+ const DAMP   = 0.991; // energy bleed per step -> gradual settle, never abrupt
+ const MAXA   = 0.66;  // clamp so it stays premium, not flailing
+ const RADIUS = 240;   // cursor influence radius (px)
+ // Expressed in the SAME units as G (angular acceleration), so the two are directly
+ // comparable. Dividing this by the arm length — as a torque would be — made it ~13x
+ // weaker than gravity and the magnet barely moved.
+ const PUSH   = 28;    // repulsion strength
+
+ let mx = -9999, my = -9999, haveMouse = false;
+ let mvx = 0, prevMx = -9999, prevT = 0;   // cursor velocity -> stronger swing when fast
+
+ if(!coarse){
+  window.addEventListener('mousemove', function(e){
+   const now = performance.now();
+   if(prevMx !== -9999 && now > prevT){
+    // px/ms, smoothed; drives the "move fast = push harder" behaviour
+    mvx = mvx * 0.7 + ((e.clientX - prevMx) / (now - prevT)) * 0.3;
+   }
+   prevMx = e.clientX; prevT = now;
+   mx = e.clientX; my = e.clientY; haveMouse = true;
+  }, { passive: true });
+ }
+
+ // arm length: string + half the magnet, i.e. pivot -> magnet centre
+ let L = 100;
+ function measure(){
+  L = string.offsetHeight + magnet.offsetHeight / 2;
+ }
+ measure();
+ window.addEventListener('resize', measure);
+
  let running = true;
-
- document.getElementById('why').addEventListener('mousemove', function(e){
-  const r = pend.getBoundingClientRect();
-  // magnet hangs below the pivot; approximate its centre for proximity testing
-  const px = r.left, py = r.top + 100;
-  mx = e.clientX; my = e.clientY;
-  const dist = Math.hypot(mx - px, my - py);
-  near = dist < 150;
-
-  if(near && lastMx !== -9999){
-   const dx = mx - lastMx;                  // cursor travel this frame
-   omega += dx * 0.0016;                    // nudge proportional to sweep speed
-  }
-  lastMx = mx;
- });
- document.getElementById('why').addEventListener('mouseleave', function(){
-  near = false; lastMx = -9999;
- });
-
- // pause when off-screen so we're not burning frames on an unseen element
  if('IntersectionObserver' in window){
-  new IntersectionObserver(function(en){ running = en[0].isIntersecting; },{threshold:0})
-   .observe(pend);
+  new IntersectionObserver(function(en){ running = en[0].isIntersecting; }, { threshold: 0 })
+   .observe(hero);
  }
 
  let prev = performance.now();
- function step(now){
-  const dt = Math.min((now - prev) / 1000, 0.05);   // clamp so tab-switches don't explode it
+ function frame(now){
+  const dt = Math.min((now - prev) / 1000, 0.04);   // clamp: tab-switch can't explode it
   prev = now;
 
   if(running){
-   omega += (-K * Math.sin(theta)) * dt;   // gravity restoring torque
-   omega *= DAMP;                          // damping → gradual settle
+   // pivot in viewport coords. Derived from the hero box + the pendulum's CSS top, NOT
+   // from pend.getBoundingClientRect() — that element rotates, so its box would shift.
+   const hr = hero.getBoundingClientRect();
+   const pivotX = hr.left + hr.width / 2;
+   const pivotY = hr.top + pend.offsetTop;
+
+   // where the magnet actually hangs right now
+   const mgX = pivotX + Math.sin(theta) * L;
+   const mgY = pivotY + Math.cos(theta) * L;
+
+   let alpha = -G * Math.sin(theta);        // gravity pulls it back to vertical
+   let load  = 0;
+
+   if(haveMouse && !coarse){
+    const dx = mgX - mx, dy = mgY - my;
+    const dist = Math.hypot(dx, dy) || 0.001;
+
+    if(dist < RADIUS){
+     // quadratic falloff — gentle at the edge, firm up close
+     const falloff = (1 - dist / RADIUS);
+     const speedBoost = 1 + Math.min(Math.abs(mvx) * 1.6, 2.2);
+     const F = PUSH * falloff * falloff * speedBoost;
+
+     // repel along cursor -> magnet, then project onto the arm's tangent, because only
+     // the tangential component can rotate a pendulum
+     const ux = dx / dist, uy = dy / dist;
+     const tx = Math.cos(theta), ty = -Math.sin(theta);   // unit tangent
+     alpha += F * (ux * tx + uy * ty);
+     load = falloff;
+    }
+   }
+
+   omega += alpha * dt;
+   omega *= DAMP;
    theta += omega * dt;
-   if(theta >  MAX){ theta =  MAX; omega *= -0.4; }   // soft bounce at the limits
-   if(theta < -MAX){ theta = -MAX; omega *= -0.4; }
-   pend.style.transform = 'translateX(-50%) rotate(' + (theta * 57.2958).toFixed(3) + 'deg)';
+
+   if(theta >  MAXA){ theta =  MAXA; omega *= -0.35; }   // soft limits
+   if(theta < -MAXA){ theta = -MAXA; omega *= -0.35; }
+
+   // secondary motion: the magnet lags the arm slightly, and the string takes up load
+   tilt    += ((omega * 2.6) - tilt) * 0.08;
+   stretch += ((1 + load * 0.07 + Math.abs(omega) * 0.012) - stretch) * 0.12;
+
+   pend.style.transform   = 'translateX(-50%) rotate(' + (theta * 57.2958).toFixed(3) + 'deg)';
+   magnet.style.transform = 'rotate(' + Math.max(-14, Math.min(14, tilt * 57.2958 * 0.12)).toFixed(2) + 'deg)';
+   string.style.transform = 'scaleY(' + stretch.toFixed(3) + ')';
   }
-  requestAnimationFrame(step);
+  requestAnimationFrame(frame);
  }
- requestAnimationFrame(step);
+ requestAnimationFrame(frame);
+})();
+
+// ── CTA intro — per-character spring physics driven by scroll ──
+// Not a marquee and not autoplay. Each character is an independent mass on its own
+// "rail": scroll VELOCITY injects an impulse, a spring pulls it toward the position
+// scroll PROGRESS dictates, and damping bleeds the energy so it overshoots slightly
+// then settles. Per-character variation in spring/damping/mass makes the letters
+// arrive one by one instead of moving as a rigid block.
+// (GSAP is not installed in this project, so this is a lightweight custom solver —
+//  no physics engine, just rAF + transforms.)
+(function(){
+ const section = document.getElementById('cta-intro');
+ const pin     = section && section.querySelector('.ci-pin');
+ if(!section || !pin) return;
+
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+ const lineEls = Array.from(section.querySelectorAll('.ci-line'));
+ if(!lineEls.length) return;
+
+ // build a flat particle list; one entry per character
+ const parts = [];
+ lineEls.forEach(function(lineEl, li){
+  const dir    = parseFloat(lineEl.dataset.dir) || 1;
+  const travel = parseFloat(lineEl.dataset.travel) || 1;
+  const chars  = Array.from(lineEl.querySelectorAll('.ci-ch'));
+
+  chars.forEach(function(el, ci){
+   // deterministic pseudo-random so each glyph differs but stays stable across reloads
+   const n = Math.sin((li + 1) * 12.9898 + ci * 78.233) * 43758.5453;
+   const r = n - Math.floor(n);                       // 0..1
+
+   parts.push({
+    el: el,
+    dir: dir,
+    travel: travel,
+    // per-character physics — kept in a narrow band so the words stay readable
+    k:    0.055 + r * 0.055,        // spring stiffness
+    damp: 0.80  + r * 0.09,         // velocity retention
+    mass: 0.75  + r * 0.55,         // how hard scroll shoves it
+    lift: (ci % 2 === 0 ? -1 : 1) * (0.55 + r * 0.75),  // alternating vertical kick
+    x: 0, vx: 0,
+    y: 0, vy: 0,
+    px: null, py: null              // last painted values (skip no-op writes)
+   });
+  });
+ });
+
+ let scrollVel = 0, lastY = window.scrollY || window.pageYOffset || 0;
+ let running = true, raf = 0;
+
+ // cached layout
+ let span = 1, vw = window.innerWidth;
+ function measure(){
+  span = Math.max(1, section.offsetHeight - pin.offsetHeight);
+  vw   = window.innerWidth;
+ }
+
+ function frame(){
+  raf = requestAnimationFrame(frame);
+  if(!running) return;
+
+  const y = window.scrollY || window.pageYOffset || 0;
+  // smoothed scroll velocity — this is what gives the letters their "shove"
+  scrollVel += ((y - lastY) - scrollVel) * 0.28;
+  lastY = y;
+
+  // scroll progress through the pinned section -> where each line WANTS to sit
+  let p = (-section.getBoundingClientRect().top) / span;
+  p = p < 0 ? 0 : (p > 1 ? 1 : p);
+  const centred = (p - 0.5) * 2;                      // -1 .. 1
+
+  for(let i = 0; i < parts.length; i++){
+   const t = parts[i];
+
+   // where the spring is pulling this character
+   const targetX = t.dir * centred * vw * 0.55 * t.travel;
+
+   // scroll velocity shoves it along its rail (fast scroll = bigger shove)
+   t.vx += scrollVel * 0.16 * t.mass * t.dir;
+   // spring toward target + damping => overshoot then settle
+   t.vx += (targetX - t.x) * t.k;
+   t.vx *= t.damp;
+   t.x  += t.vx;
+
+   // subtle vertical hop, proportional to how hard it is currently moving
+   const kick = Math.min(Math.abs(scrollVel) * 0.14, 9) * t.lift;
+   t.vy += (kick - t.y) * (t.k * 1.5);
+   t.vy *= t.damp * 0.96;
+   t.y  += t.vy;
+
+   const nx = Math.round(t.x * 10) / 10;
+   const ny = Math.round(t.y * 10) / 10;
+   if(nx !== t.px || ny !== t.py){
+    t.el.style.transform = 'translate3d(' + nx + 'px,' + ny + 'px,0)';
+    t.px = nx; t.py = ny;
+   }
+  }
+ }
+
+ // only run the solver while the section is anywhere near the viewport
+ if('IntersectionObserver' in window){
+  new IntersectionObserver(function(en){
+   running = en[0].isIntersecting;
+   if(running) lastY = window.scrollY || window.pageYOffset || 0;   // avoid a jump on re-entry
+  }, { rootMargin: '250px 0px' }).observe(section);
+ }
+
+ measure();
+ window.addEventListener('resize', measure);
+ raf = requestAnimationFrame(frame);
+})();
+
+// ── Case studies — carousel track driven entirely by vertical scroll ──
+// PERF NOTES (this section was janky before):
+//  * All layout reads (offsetWidth/offsetHeight) are cached and only refreshed on
+//    resize. Reading them inside the frame loop forced a synchronous reflow on EVERY
+//    frame while we were also writing styles — classic layout thrashing.
+//  * Each frame now does ONE cheap read (rect.top) and then only writes.
+//  * Writes are dirty-checked, so untouched cards don't get pointless style updates.
+//  * An IntersectionObserver stops the loop entirely when the section is off-screen.
+(function(){
+ const scroller = document.getElementById('casesScroll');
+ const track    = document.getElementById('casesTrack');
+ const pin      = scroller && scroller.querySelector('.cases-pin');
+ if(!scroller || !track || !pin) return;
+
+ const cards = Array.from(track.querySelectorAll('.case-card'));
+ if(!cards.length) return;
+
+ const last = cards.length - 1;
+
+ // ── cached layout (refreshed only on resize) ──
+ let span = 1, step = 1;
+ function measure(){
+  span = Math.max(1, scroller.offsetHeight - pin.offsetHeight);
+  step = cards[0].offsetWidth + 40;
+ }
+
+ // remember what we last wrote so we can skip no-op DOM writes
+ const state = cards.map(function(){ return { x:null, o:null, z:null, v:null }; });
+
+ let ticking = false, visible = true;
+
+ function layout(){
+  ticking = false;
+  if(!visible) return;
+
+  const p0 = -scroller.getBoundingClientRect().top / span;   // the only per-frame read
+  const p  = p0 < 0 ? 0 : (p0 > 1 ? 1 : p0);
+
+  const activeF = p * last;
+  let nearest = 0, nearestDist = Infinity;
+
+  for(let i = 0; i < cards.length; i++){
+   const card = cards[i];
+   const st   = state[i];
+   const d    = i - activeF;
+   const ad   = d < 0 ? -d : d;
+
+   if(ad < nearestDist){ nearestDist = ad; nearest = i; }
+
+   const vis = ad > 2.1 ? 'hidden' : 'visible';
+   if(st.v !== vis){ card.style.visibility = vis; st.v = vis; }
+   if(vis === 'hidden') continue;
+
+   // linear track: constant spacing, so cards can never drift into one another
+   // Direction: +d puts an upcoming card on the RIGHT and a passed card on the LEFT,
+   // so each card travels RIGHT -> CENTRE -> LEFT -> exit. (Sign inverted from before.)
+   const x  = Math.round(d * step);                     // round => fewer sub-pixel repaints
+   const sc = ad > 1.25 ? 0.9 : (1 - ad * 0.08);
+   // neighbours stay substantial enough to read as whole cards. Fading them harder
+   // left only their saturated 40% visual panel visible against the white page, which
+   // looked like a detached colour block rather than part of a card.
+   const o  = +(Math.max(0, 1 - ad * 0.38)).toFixed(2);
+   const z  = 50 - Math.round(ad * 10);
+
+   if(st.x !== x){
+    card.style.transform = 'translate3d(calc(-50% + ' + x + 'px), -50%, 0) scale(' + sc.toFixed(3) + ')';
+    st.x = x;
+   }
+   if(st.o !== o){ card.style.opacity = o; st.o = o; }
+   if(st.z !== z){ card.style.zIndex = z; st.z = z; }
+  }
+
+  for(let i = 0; i < cards.length; i++){
+   cards[i].classList.toggle('is-active', i === nearest);
+  }
+ }
+
+ function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(layout); } }
+
+ // don't run the loop at all while the section is nowhere near the viewport
+ if('IntersectionObserver' in window){
+  new IntersectionObserver(function(en){
+   visible = en[0].isIntersecting;
+   if(visible) onScroll();
+  }, { rootMargin: '200px 0px' }).observe(scroller);
+ }
+
+ measure();
+ layout();
+ window.addEventListener('scroll', onScroll, { passive: true });
+ window.addEventListener('resize', function(){ measure(); onScroll(); });
 })();
 </script>

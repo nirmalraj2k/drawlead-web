@@ -107,18 +107,22 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .sec-cta{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:3rem}
 
 /* ── HERO ── */
+/* Dark hero, two columns: copy on the left, live industry dashboard on the right. */
 #hero{
  min-height:100vh;display:flex;align-items:center;justify-content:center;
- padding:7rem 3.5rem 4rem;overflow:hidden;border-bottom:1px solid var(--border);
- position:relative;
+ padding:7rem 3.5rem 4rem;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.06);
+ position:relative;color:#fff;
+ background:#04070a;
 }
+/* two columns again: copy left, live dashboard right */
 .hero-grid{
- display:grid;grid-template-columns:minmax(0,42%) minmax(0,58%);
- gap:4rem;align-items:center;max-width:1400px;width:100%;margin:0 auto;
+ display:grid;grid-template-columns:minmax(0,44%) minmax(0,56%);
+ gap:3.5rem;align-items:center;max-width:1400px;width:100%;margin:0 auto;
  position:relative;z-index:2;
 }
 .hero-left{text-align:left}
-.hero-right{display:flex;flex-direction:column;max-width:580px;width:100%;margin-left:auto;animation:fu .7s ease .3s both}
+.hero-right{display:flex;flex-direction:column;max-width:600px;width:100%;margin-left:auto;animation:fu .7s ease .3s both}
+
 
 /* Grid fades toward the hero's outer edges instead of hard-cutting */
 .hero-grid-bg{
@@ -180,6 +184,32 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .hstat-n{font-family:var(--font-display);font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1}
 .hstat-n.gr{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hstat-l{font-family:var(--font-body);font-size:13.5px;color:var(--g500);margin-top:2px;font-weight:500}
+
+/* ── hero recoloured for the dark background (scoped to #hero; these same classes are
+      reused elsewhere on light backgrounds, so nothing here may leak out) ── */
+#hero .hero-h{color:#fff}
+#hero .hero-p{color:rgba(255,255,255,.62)}
+#hero .hero-eyebrow{background:rgba(45,190,120,.10);border-color:rgba(45,190,120,.22)}
+#hero .hero-etxt{color:#4ecb87}
+#hero .hstat{border-right-color:rgba(255,255,255,.1)}
+#hero .hstat-ico{background:rgba(45,190,120,.13);color:#4ecb87}
+#hero .hstat-n{color:#fff}
+#hero .hstat-l{color:rgba(255,255,255,.5)}
+#hero .hero-stats{border-top-color:rgba(255,255,255,.1)}
+#hero .hero-btns .btn-ghost{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.18)}
+#hero .hero-btns .btn-ghost:hover{border-color:rgba(45,190,120,.6);background:rgba(45,190,120,.12)}
+#hero .grid-bg{
+ background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+                  linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+}
+#hero .hero-grid{z-index:2}
+/* Dashboard chrome recoloured for the dark hero (these tab classes are also used on a
+   light background elsewhere, so this stays scoped to #hero). */
+#hero .ind-tabs{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+#hero .ind-tab{color:rgba(255,255,255,.5)}
+#hero .ind-tab:hover:not(.active){background:rgba(255,255,255,.07);color:#fff}
+#hero .ind-tab.active{background:#fff;color:#04070a}
+#hero #tabProgressWrap{background:rgba(255,255,255,.12)}
 
 /* Industry tabs — compact selector above the dashboard window */
 .ind-tabs{display:flex;gap:3px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:4px;width:100%;margin-bottom:14px}
@@ -860,10 +890,153 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .t-tag{font-size:8.5px;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:2.5px 6px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.05);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
 
 /* ── CASES ── */
-#cases{background:var(--bg)}
-.cases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.case-card{background:var(--white);border-radius:10px;border:1.5px solid var(--border);overflow:hidden;display:flex;flex-direction:column;transition:all .2s}
-.case-screen{background:var(--bg2);border-bottom:1.5px solid var(--border);padding:0;overflow:hidden;position:relative;height:180px}
+/* ══════════ CASE STUDIES — scroll-driven horizontal gallery (homepage only) ══════════
+   Vertical scroll drives a horizontal transition: the active card sits centred, the
+   outgoing card exits LEFT, the incoming card enters from the RIGHT. Not a stack and
+   not a looping carousel — position is a pure function of scroll progress.
+   overflow-x is CLIPPED (not hidden) so off-screen cards never create a horizontal
+   scrollbar, and without making this a scroll container (which would break sticky). */
+#cases{
+ background:#FFFFFF;
+ background-image:radial-gradient(circle at 50% 42%,rgba(50,180,111,.035),transparent 55%);
+}
+/* ══════════ CASE STUDIES — horizontal track driven by vertical scroll ══════════
+   The tall .cases-scroll runway supplies the scroll distance; .cases-pin sticks inside
+   it so the section holds still while cards travel horizontally. No arrows, no dots,
+   no timers — JS maps scroll progress straight to each card's transform.
+   overflow-x is CLIPPED (not hidden) so off-screen cards never create a horizontal
+   scrollbar, and without making this a scroll container (which would break sticky). */
+.cases-scroll{position:relative;height:420vh;overflow-x:hidden;overflow-x:clip}
+.cases-pin{
+ position:sticky;top:0;height:100vh;
+ display:flex;align-items:center;justify-content:center;
+ overflow-x:hidden;overflow-x:clip;
+}
+.cases-track{position:relative;width:100%;height:420px}
+/* ── Glassmorphism industry card ──
+   Each card sets --acc / --acc2 / --atm inline, so one rule set serves all three
+   industries. The card body is frosted glass sitting over an industry-tinted
+   atmosphere, with a soft 3D orb above it. */
+.case-card{
+ position:absolute;top:50%;left:50%;
+ width:min(940px,92vw);min-height:360px;
+ transform:translate(-50%,-50%);        /* JS overwrites with the full transform */
+ border-radius:22px;overflow:hidden;
+ display:flex;flex-direction:row;align-items:stretch;
+ /* industry atmosphere sits behind the frosted panel and shows through it */
+ background:
+  radial-gradient(circle at 50% 18%,var(--atm,rgba(56,185,118,.18)) 0%,transparent 55%),
+  linear-gradient(180deg,#FDFEFD 0%,#F4F7F5 100%);
+ /* BUG FIX: this border was WHITE on a WHITE section, so the card had no visible edge.
+    Once opacity dropped, the pale content half vanished into the page while the
+    saturated 40% visual panel stayed obvious — which read as a detached colour block. */
+ border:1px solid #E3E5E3;
+ box-shadow:0 14px 46px rgba(20,40,30,.08),inset 0 1px 0 rgba(255,255,255,.7);
+ /* transform/opacity are set per-frame from scroll position, so they are deliberately
+    NOT transitioned — a transition would lag behind the scroll and feel disconnected */
+ transition:box-shadow .4s ease,border-color .4s ease;
+ will-change:transform,opacity;
+}
+.case-card.is-active{
+ border-color:rgba(50,180,111,.30);
+ box-shadow:0 20px 56px rgba(20,40,30,.12),0 0 0 1px rgba(50,180,111,.10),inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+/* ── top industry visual: soft 3D glass orb ── */
+/* ── 40% visual panel (right). Order flips it after the content without touching the
+      markup, which still has the visual first. Fills its panel edge to edge. ── */
+.case-screen{
+ order:2;flex:0 0 40%;width:40%;
+ position:relative;overflow:hidden;
+ border:none;padding:0;height:auto;
+ display:flex;align-items:center;justify-content:center;
+ background:
+  radial-gradient(circle at 32% 24%,rgba(255,255,255,.55) 0%,transparent 46%),
+  /* white wash over the accent keeps the panel in the same tonal family as the pale
+     content half — at full saturation it read as a separate coloured block */
+  linear-gradient(150deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.12) 55%,transparent 100%),
+  linear-gradient(150deg,var(--acc2,#9BE3C0) 0%,var(--acc,#38B976) 70%,var(--acc,#38B976) 100%);
+}
+/* soft light bloom inside the panel — reads as depth rather than a flat fill */
+.case-orb{
+ display:block;width:78%;aspect-ratio:1;height:auto;border-radius:50%;
+ background:
+  radial-gradient(circle at 34% 28%,rgba(255,255,255,.85) 0%,rgba(255,255,255,.28) 20%,transparent 46%),
+  radial-gradient(circle at 62% 72%,rgba(255,255,255,.22) 0%,transparent 62%);
+ box-shadow:inset 0 -14px 34px rgba(0,0,0,.07),inset 0 12px 28px rgba(255,255,255,.4);
+ opacity:.95;
+}
+
+/* ── 60% frosted glass content panel (left) ── */
+.case-body{
+ /* margin sits OUTSIDE the flex basis, so it's subtracted here — otherwise
+    60% + 28px + 40% would overflow the card and break the split */
+ order:1;flex:0 0 calc(60% - 28px);width:calc(60% - 28px);
+ position:relative;margin:14px;padding:34px;
+ display:flex;flex-direction:column;justify-content:center;
+ background:rgba(255,255,255,.62);
+ /* PERF: no backdrop-filter here. Blurring a live backdrop on an element that
+    transforms every frame is extremely expensive and was the main source of jank.
+    A more opaque panel gives the same frosted look for near-zero cost. */
+ border:1px solid rgba(255,255,255,.35);border-radius:18px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 4px 18px rgba(20,40,30,.04);
+}
+.case-tag{
+ font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;
+ padding:6px 13px;border-radius:999px;display:inline-flex;align-self:flex-start;
+ color:var(--acc,#38B976);
+ background:rgba(255,255,255,.78);
+ border:1px solid rgba(255,255,255,.55);
+ margin-bottom:20px;
+}
+.case-title{font-size:21px;font-weight:700;letter-spacing:-.015em;line-height:1.25;color:#171717;margin-bottom:14px}
+.case-list{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:32px}
+.case-list li{
+ font-size:13.5px;color:rgba(64,64,64,.78);padding:6px 0;line-height:1.6;font-weight:400;
+ display:flex;align-items:flex-start;gap:9px;
+}
+.case-list li::before{content:'→';font-weight:600;font-size:11px;flex-shrink:0;color:var(--acc,#38B976);margin-top:3px}
+
+/* ── glass CTA ── */
+#cases .case-card .btn-outline2{
+ align-self:flex-start;
+ background:rgba(255,255,255,.72);
+ border:1px solid rgba(255,255,255,.55);
+ color:#171717;border-radius:11px;
+ padding:11px 20px;font-weight:600;font-size:11px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+ transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease,background .25s ease,color .25s ease;
+}
+#cases .case-card .btn-outline2:hover{
+ background:rgba(255,255,255,.55);
+ border-color:var(--acc,#38B976);color:var(--acc,#38B976);
+ transform:translateY(-2px);
+ box-shadow:0 8px 22px -6px var(--atm,rgba(56,185,118,.18)),inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+@media(max-width:1000px){
+ .cases-scroll{height:380vh}
+ .cases-track{height:400px}
+ .case-card{width:min(720px,88vw);min-height:320px}
+ .case-body{padding:28px}
+}
+/* below this the 60/40 split gets too cramped — stack it: visual on top, content below */
+@media(max-width:680px){
+ .cases-scroll{height:340vh}
+ .cases-track{height:560px}
+ .case-card{width:calc(100vw - 56px);min-height:0;flex-direction:column}
+ .case-screen{order:1;flex:0 0 168px;width:100%;height:168px}
+ .case-orb{width:132px}
+ .case-body{order:2;flex:1 1 auto;width:auto;margin:12px;padding:24px}
+ .case-title{font-size:18px}
+}
+/* reduced motion: no horizontal sweep — plain readable stack in normal flow */
+@media(prefers-reduced-motion:reduce){
+ .cases-scroll{height:auto;overflow:visible}
+ .cases-pin{position:static;height:auto;display:block}
+ .cases-track{height:auto;display:flex;flex-direction:column;gap:22px;align-items:center;padding:1rem 0}
+ .case-card{position:static;transform:none !important;opacity:1 !important;visibility:visible !important}
+}
 .cs-bar{display:flex;align-items:center;gap:4px;padding:7px 10px;background:var(--bg);border-bottom:1px solid var(--border)}
 .cs-dot{width:7px;height:7px;border-radius:50%}
 .cs-title{margin-left:auto;font-size:8px;font-weight:700;letter-spacing:.06em;color:var(--g400);text-transform:uppercase}
@@ -891,15 +1064,6 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .cs-badge-s{margin-left:auto;font-size:6px;padding:1.5px 4px;border-radius:2px;font-weight:700;background:rgba(50,180,111,.1);color:#32b46f}
 .cs-funnel{display:flex;flex-direction:column;gap:2px}
 .cs-fbar2{border-radius:2px;height:14px;display:flex;align-items:center;padding:0 6px;font-size:7px;font-weight:600;color:#32b46f}
-.case-card:hover{box-shadow:0 6px 28px rgba(0,0,0,.1);border-color:var(--g300)}
-.case-top-bar{display:none}
-.case-body{padding:1.85rem;flex:1;display:flex;flex-direction:column;gap:.9rem}
-.case-tag{font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;padding:3.5px 9px;border-radius:8px;display:inline-flex;align-self:flex-start}
-.case-title{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
-.case-list{list-style:none;flex:1;display:flex;flex-direction:column;gap:0}
-.case-list li{font-size:12.5px;color:var(--g500);padding:7px 0;display:flex;align-items:center;gap:8px;font-weight:400}
-.case-list li:first-child{border-top:none}
-.case-list li::before{content:'→';font-weight:700;font-size:10px;flex-shrink:0}
 
 /* ── INDUSTRIES ── */
 #industries{background:var(--white)}
@@ -939,9 +1103,16 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .why-string{
  display:block;width:1px;height:clamp(46px,6vw,74px);
  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.45));
+ transform-origin:top center;      /* stretches downward from the anchor, never detaches */
+ will-change:transform;
 }
 /* kept deliberately smaller than the question mark */
-.why-magnet{display:block;width:clamp(74px,9.5vw,118px);height:clamp(74px,9.5vw,118px);filter:drop-shadow(0 10px 26px rgba(51,180,112,.35))}
+.why-magnet{
+ display:block;width:clamp(74px,9.5vw,118px);height:clamp(74px,9.5vw,118px);
+ filter:drop-shadow(0 10px 26px rgba(51,180,112,.35));
+ transform-origin:top center;      /* rotates about where the string meets it */
+ will-change:transform;
+}
 .why-magnet-img{width:100%;height:100%;display:block;object-fit:contain}
 .why-magnet-svg{display:none;width:100%;height:100%}
 .why-magnet.is-fallback .why-magnet-svg{display:block}
@@ -1056,12 +1227,93 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 .d-ch-fill{height:100%;border-radius:8px;}
 
 /* ── CTA ── */
+/* Base #cta stays dark & full-bleed — About Us and /home-2 both use this section and
+   have no .cta-card wrapper, so changing the base here would blow out their CTAs. */
+/* ══════════ CTA INTRO — per-character kinetic typography (white, scroll-driven) ══════════
+   Replaces the old whole-line marquee. Each .ci-ch is an independent inline-block that
+   JS transforms every frame from a spring solver.
+   overflow-x is CLIPPED (not hidden) so characters can travel past both viewport edges
+   without ever producing a horizontal scrollbar — and without creating a scroll
+   container, which would break position:sticky here and elsewhere on the page. */
+#cta-intro{
+ position:relative;background:#FFFFFF;
+ height:280vh;
+ overflow-x:hidden;overflow-x:clip;
+}
+.ci-pin{
+ position:sticky;top:0;height:100vh;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:.02em;overflow:hidden;
+}
+.ci-line{
+ display:block;white-space:nowrap;width:max-content;
+ font-family:var(--font-display);
+ font-size:clamp(58px,12vw,190px);
+ font-weight:800;letter-spacing:-.045em;line-height:1.02;
+ color:var(--black);
+}
+/* one mass per glyph */
+.ci-ch{
+ display:inline-block;
+ will-change:transform;
+ backface-visibility:hidden;
+}
+.ci-g{color:#33B470}
+.ci-sp{width:.26em}
+
+@media(max-width:1024px){
+ #cta-intro{height:240vh}
+ .ci-line{font-size:clamp(44px,13vw,120px)}
+}
+@media(max-width:560px){
+ #cta-intro{height:190vh}
+ .ci-line{font-size:clamp(32px,13vw,74px);letter-spacing:-.035em}
+}
+/* reduced motion: JS never runs, so the type simply sits centred and readable */
+@media(prefers-reduced-motion:reduce){
+ #cta-intro{height:auto}
+ .ci-pin{position:static;height:auto;padding:5rem 1.25rem}
+ .ci-line{white-space:normal;width:auto;text-align:center;font-size:clamp(28px,6vw,64px)}
+ .ci-ch{transform:none !important}
+}
+
+
 #cta{
  padding:9rem 3.5rem;text-align:center;position:relative;
  overflow:hidden;background:var(--black);border-bottom:none;
 }
+/* Framed variant (homepage): light page ground with the dark treatment moved onto the
+   inset .cta-card, so white space frames it on all four sides. */
+#cta.cta-framed{
+ padding:6rem 3.5rem;background:var(--white);overflow:visible;
+}
+/* still used by the About Us and /home-2 CTAs — do not remove */
+.cta-card{
+ position:relative;overflow:hidden;
+ max-width:1180px;margin:0 auto;
+ padding:6rem 3rem;border-radius:44px;
+ border:1px solid rgba(51,180,112,.22);
+ /* deep green-black base with the glow concentrated behind the headline, fading out
+    toward the edges */
+ background:
+  radial-gradient(70% 58% at 50% 44%,rgba(51,180,112,.20) 0%,rgba(30,120,80,.09) 40%,transparent 72%),
+  radial-gradient(120% 90% at 50% 50%,#0a2018 0%,#04120c 55%,#020806 100%);
+ box-shadow:inset 0 0 130px rgba(51,180,112,.07),0 40px 90px rgba(0,0,0,.16);
+}
+/* eyebrow pill above the headline */
+.cta-eyebrow{
+ display:inline-flex;align-items:center;gap:9px;position:relative;
+ padding:8px 18px;border-radius:999px;margin-bottom:2rem;
+ background:rgba(51,180,112,.10);border:1px solid rgba(51,180,112,.26);
+ font-family:var(--font-body);font-size:13px;font-weight:600;color:#4ecb87;
+}
+.cta-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#33B470;box-shadow:0 0 0 3px rgba(51,180,112,.18)}
+@media(max-width:820px){
+ #cta.cta-framed{padding:3.5rem 1.25rem}
+ .cta-card{padding:4rem 1.5rem;border-radius:32px}
+}
 .cta-grid-bg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:68px 68px}
-.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(50,180,111,.22) 0%,rgba(50,180,111,.12) 35%,transparent 65%);pointer-events:none}
+.cta-glow{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:760px;height:620px;background:radial-gradient(circle,rgba(51,180,112,.16) 0%,rgba(51,180,112,.07) 38%,transparent 68%);pointer-events:none}
 .cta-h{font-size:clamp(50px,8vw,96px);font-weight:900;letter-spacing:-.035em;line-height:.94;color:#fff;margin-bottom:1.25rem;position:relative}
 .cta-h .fade{color:rgba(255,255,255,.2)}
 .cta-h .gr{background:linear-gradient(115deg,#4ecb87,#34a87c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;padding-right:3px}
@@ -1115,7 +1367,7 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .hstat{flex:1 1 40%;border-right:none;justify-content:center}
   .fn-grid{grid-template-columns:repeat(2,1fr)}
   .tech-grid{grid-template-columns:repeat(2,1fr)}
-  .cases-grid,.dash-grid{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
   .why-grid{grid-template-columns:repeat(2,1fr)}
   .ind-grid{grid-template-columns:repeat(2,1fr)}
   footer{grid-template-columns:1fr;gap:2.5rem}
@@ -1145,7 +1397,7 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .fn-grid,.why-grid,.ind-grid{grid-template-columns:1fr}
   .cf-card{width:280px;flex-basis:280px}
   .tech-grid{grid-template-columns:1fr}
-  .cases-grid,.dash-grid{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
   .hpf-body{height:auto;flex-direction:column}
   .hpf-sidebar{display:none}
   .hpf-main{padding:12px}
@@ -1172,7 +1424,7 @@ footer{padding:2.75rem 3.5rem;display:grid;grid-template-columns:1.3fr 1fr 1fr;g
   .cta-btn-w,.cta-btn-g{width:100%;max-width:360px;justify-content:center}
   .why-grid{grid-template-columns:1fr}
   .ind-chip{font-size:12px;padding:8px 14px}
-  .case-screen{height:160px}
+  
   .cs-body{height:calc(160px - 28px)}
   .mq-wrap{display:none}
   .fn-cta-card{padding:2rem 1.5rem}
