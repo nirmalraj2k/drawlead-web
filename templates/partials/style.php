@@ -1229,53 +1229,89 @@ section{padding:7rem 3.5rem;border-bottom:1px solid var(--border);position:relat
 /* ── CTA ── */
 /* Base #cta stays dark & full-bleed — About Us and /home-2 both use this section and
    have no .cta-card wrapper, so changing the base here would blow out their CTAs. */
-/* ══════════ CTA INTRO — per-character kinetic typography (white, scroll-driven) ══════════
-   Replaces the old whole-line marquee. Each .ci-ch is an independent inline-block that
-   JS transforms every frame from a spring solver.
-   overflow-x is CLIPPED (not hidden) so characters can travel past both viewport edges
-   without ever producing a horizontal scrollbar — and without creating a scroll
-   container, which would break position:sticky here and elsewhere on the page. */
+/* ══════════ CTA INTRO — launch → arc → land → train glide ══════════
+   Three horizontal rails. Each rail carries two copies of its characters:
+
+     .ci-measure  hidden, in normal flow. Exists purely so the browser lays the text
+                  out with real kerning and JS can read offsetLeft per glyph. Never
+                  display:none — that would zero the offsets.
+     .ci-stage    visible, absolutely positioned. Every glyph is driven by JS from the
+                  shared launch point, along its arc, onto the baseline, then along
+                  the rail with the train.
+
+   Typography is deliberately oversized and IS allowed to run past the viewport edge,
+   because the letters are travelling along a rail. #cta-intro clips horizontally so
+   that never produces a page scrollbar. overflow-x:clip (not hidden) avoids creating
+   a scroll container, which would break sticky positioning elsewhere on the page. */
 #cta-intro{
  position:relative;background:#FFFFFF;
- height:280vh;
  overflow-x:hidden;overflow-x:clip;
 }
+/* GSAP pins this element, so it must be exactly one viewport tall. Scroll length is
+   supplied by ScrollTrigger's end distance, not by section height.
+   padding-top clears the fixed 77px nav: the section pins at top:0, so on short, wide
+   viewports (e.g. 1920x600) the centred block would otherwise sit under the header. */
 .ci-pin{
- position:sticky;top:0;height:100vh;
- display:flex;flex-direction:column;align-items:center;justify-content:center;
- gap:.02em;overflow:hidden;
+ height:100vh;
+ display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+ gap:1.5vh;overflow:hidden;
+ padding-top:77px;box-sizing:border-box;
 }
-.ci-line{
- display:block;white-space:nowrap;width:max-content;
+.ci-rail{
+ position:relative;
+ height:clamp(64px,11.5vw,164px);
  font-family:var(--font-display);
- font-size:clamp(58px,12vw,190px);
- font-weight:800;letter-spacing:-.045em;line-height:1.02;
- color:var(--black);
+ font-size:clamp(56px,10.5vw,150px);
+ font-weight:800;letter-spacing:-.03em;line-height:1;
+ color:#111111;
 }
-/* one mass per glyph */
-.ci-ch{
- display:inline-block;
- will-change:transform;
+/* measured, not shown — visibility:hidden keeps layout so offsetLeft stays valid */
+.ci-measure{
+ position:absolute;left:0;bottom:0;
+ visibility:hidden;white-space:nowrap;
+ pointer-events:none;
+}
+.ci-stage{
+ position:absolute;left:0;bottom:0;right:0;top:0;
+ pointer-events:none;
+}
+/* one flying mass per glyph */
+.ci-stage .ci-ch{
+ position:absolute;left:0;bottom:0;
+ display:inline-block;white-space:pre;
+ transform-origin:bottom center;
+ will-change:transform,opacity;
  backface-visibility:hidden;
+ opacity:0;
 }
-.ci-g{color:#33B470}
-.ci-sp{width:.26em}
+.ci-g{color:#38B976}
+
+/* Short viewports: three oversized rails plus the nav can exceed the pinned height on
+   wide-but-short screens, so scale the type down rather than let it clip. */
+@media(max-height:760px){
+ .ci-rail{height:clamp(52px,9vw,120px);font-size:clamp(44px,8.2vw,110px)}
+}
+@media(max-height:600px){
+ .ci-rail{height:clamp(42px,7vw,92px);font-size:clamp(36px,6.4vw,84px)}
+ .ci-pin{gap:1vh}
+}
 
 @media(max-width:1024px){
- #cta-intro{height:240vh}
- .ci-line{font-size:clamp(44px,13vw,120px)}
+ .ci-rail{height:clamp(52px,12vw,110px);font-size:clamp(44px,11vw,100px)}
 }
 @media(max-width:560px){
- #cta-intro{height:190vh}
- .ci-line{font-size:clamp(32px,13vw,74px);letter-spacing:-.035em}
+ .ci-rail{height:clamp(38px,13vw,66px);font-size:clamp(32px,12vw,60px);letter-spacing:-.025em}
+ .ci-pin{gap:1vh}
 }
-/* reduced motion: JS never runs, so the type simply sits centred and readable */
-@media(prefers-reduced-motion:reduce){
- #cta-intro{height:auto}
- .ci-pin{position:static;height:auto;padding:5rem 1.25rem}
- .ci-line{white-space:normal;width:auto;text-align:center;font-size:clamp(28px,6vw,64px)}
- .ci-ch{transform:none !important}
-}
+
+/* Static fallback — applied by JS when reduced motion is requested, or if GSAP failed
+   to load. The flowing measure copy becomes the visible text and the absolutely
+   positioned stage is dropped, so the composition is always readable. */
+#cta-intro.ci-static{height:auto}
+#cta-intro.ci-static .ci-pin{height:auto;padding:5rem 1.25rem;align-items:center}
+#cta-intro.ci-static .ci-rail{height:auto;text-align:center}
+#cta-intro.ci-static .ci-measure{position:static;visibility:visible;white-space:normal}
+#cta-intro.ci-static .ci-stage{display:none}
 
 
 #cta{

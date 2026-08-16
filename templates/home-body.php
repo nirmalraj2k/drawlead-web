@@ -886,34 +886,53 @@ foreach (industries_ordered() as $entry) { $indByKey[$entry['key']] = $entry['in
 
 
 <?php
-// ═══════ CTA INTRO — scroll-driven, per-character spring physics ═══════
-// Every character is emitted as its own inline-block span so the JS can give each one
-// independent position, velocity, spring and damping. Words listed in 'green' get the
-// brand accent. This replaces the previous whole-line marquee entirely.
+// ═══════ CTA INTRO — launch → arc → land → glide ═══════
+// Ported from the approved prototype. Per line we emit two parallel character sets:
+//
+//   .ci-measure  a hidden copy in normal flow. The browser lays it out with real
+//                kerning, and JS reads offsetLeft off each span to get every glyph's
+//                natural offset — spacing is measured, never guessed.
+//   .ci-stage    the visible copy, absolutely positioned. JS drives each glyph from
+//                the shared launch point, along its arc, onto its landing position,
+//                then glides it with the rest of the line.
+//
+// 'start' staggers when each line begins, so the three don't fire in lockstep.
 $ciLines = [
- ['text' => 'Ready to Transform', 'green' => [],      'dir' => -1, 'travel' => 1.30],
- ['text' => 'Your Business ERP',  'green' => ['ERP'], 'dir' =>  1, 'travel' => 1.00],
- ['text' => 'with AI?',           'green' => ['AI?'], 'dir' => -1, 'travel' => 1.45],
+ ['text' => 'Ready to Transform', 'green' => [],      'start' => 0.00],
+ ['text' => 'Your Business ERP',  'green' => ['ERP'], 'start' => 0.07],
+ ['text' => 'with AI?',           'green' => ['AI?'], 'start' => 0.14],
 ];
 ?>
 <section id="cta-intro">
  <div class="ci-pin">
   <?php foreach ($ciLines as $li => $line): ?>
-  <div class="ci-line" data-dir="<?= $line['dir'] ?>" data-travel="<?= $line['travel'] ?>" aria-label="<?= h($line['text']) ?>">
+  <div class="ci-rail" data-start="<?= $line['start'] ?>" aria-label="<?= h($line['text']) ?>">
    <?php
+   // Build the character list once, then emit it twice (measure + stage) so the two
+   // copies can never drift out of sync.
+   $cells = [];
    $words = explode(' ', $line['text']);
-   foreach ($words as $wi => $word):
-    $isGreen = in_array($word, $line['green'], true);
-    // split on characters (mb-safe) so each glyph animates on its own
-    $chars = preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY);
-    foreach ($chars as $ch):
-     ?><span class="ci-ch<?= $isGreen ? ' ci-g' : '' ?>" aria-hidden="true"><?= h($ch) ?></span><?php
-    endforeach;
-    if ($wi < count($words) - 1):
-     ?><span class="ci-ch ci-sp" aria-hidden="true">&nbsp;</span><?php
-    endif;
-   endforeach;
+   foreach ($words as $wi => $word) {
+       $isGreen = in_array($word, $line['green'], true);
+       foreach (preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY) as $ch) {
+           $cells[] = ['ch' => $ch, 'green' => $isGreen];
+       }
+       if ($wi < count($words) - 1) {
+           $cells[] = ['ch' => ' ', 'green' => false];
+       }
+   }
    ?>
+   <div class="ci-measure" aria-hidden="true"><?php
+    // carries the green class too: this copy is what shows in the static fallback
+    foreach ($cells as $c) {
+        ?><span<?= $c['green'] ? ' class="ci-g"' : '' ?>><?= $c['ch'] === ' ' ? '&nbsp;' : h($c['ch']) ?></span><?php
+    }
+   ?></div>
+   <div class="ci-stage" aria-hidden="true"><?php
+    foreach ($cells as $c) {
+        ?><span class="ci-ch<?= $c['green'] ? ' ci-g' : '' ?>"><?= $c['ch'] === ' ' ? '&nbsp;' : h($c['ch']) ?></span><?php
+    }
+   ?></div>
   </div>
   <?php endforeach; ?>
  </div>
@@ -941,6 +960,36 @@ $ciLines = [
 <!-- Matter.js is vendored locally (assets/), matching the site's no-external-scripts
      convention. Loaded here rather than in the shared layout so only this page pays for it. -->
 <script src="/assets/matter.min.js"></script>
+
+<!-- GSAP + ScrollTrigger + Lenis, vendored locally to match the same convention.
+     Loaded once, here, and nowhere else — no duplicate initialisation. Deliberately on
+     this page only rather than the shared layout: Lenis takes over document scrolling
+     wherever it loads, so scoping it here keeps every other page on native scroll. -->
+<script src="/assets/gsap.min.js"></script>
+<script src="/assets/ScrollTrigger.min.js"></script>
+<script src="/assets/lenis.min.js"></script>
+<script>
+// ── Lenis smooth scroll, driven by the GSAP ticker ──
+// The project had no smooth-scroll system before this, so nothing competes with it.
+// Skipped entirely under reduced motion, or if a library is missing, so the page
+// always degrades to plain native scrolling rather than breaking.
+(function(){
+ if(typeof window.Lenis === 'undefined' || typeof window.gsap === 'undefined') return;
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+ const lenis = new Lenis({
+  duration: 1.2,
+  easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+  smoothWheel: true
+ });
+ if(typeof window.ScrollTrigger !== 'undefined'){
+  lenis.on('scroll', ScrollTrigger.update);
+ }
+ gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+ gsap.ticker.lagSmoothing(0);
+ window.__lenis = lenis;
+})();
+</script>
 <script>
 // ── Industry Dashboard Switcher — one window, data-driven, auto-rotates ──
 const industries = [
@@ -1572,115 +1621,154 @@ if(!reduceMotion){
  requestAnimationFrame(frame);
 })();
 
-// ── CTA intro — per-character spring physics driven by scroll ──
-// Not a marquee and not autoplay. Each character is an independent mass on its own
-// "rail": scroll VELOCITY injects an impulse, a spring pulls it toward the position
-// scroll PROGRESS dictates, and damping bleeds the energy so it overshoots slightly
-// then settles. Per-character variation in spring/damping/mass makes the letters
-// arrive one by one instead of moving as a rigid block.
-// (GSAP is not installed in this project, so this is a lightweight custom solver —
-//  no physics engine, just rAF + transforms.)
+// ── CTA intro — launch → arc → land → glide ──
+// Ported from the approved prototype, generalised from one line to three.
+// The architecture is the reference's, unchanged: natural offsets measured from a
+// hidden copy, one shared launch point, a curved flight keyed off distance-to-landing,
+// then a rigid glide once landed.
+//
+// For character i of a line:
+//   letterSlotX = currentTrainX + offsets[i]     (currentTrainX is scroll-driven)
+//   still short of the landing point -> Stage 1: flying (arc + rotate + scale + fade)
+//   past it                          -> Stage 2: landed, glides with the line
+// Because every glyph keeps its measured offset in Stage 2, landed letters hold exact
+// kerning and read as one word.
 (function(){
  const section = document.getElementById('cta-intro');
- const pin     = section && section.querySelector('.ci-pin');
- if(!section || !pin) return;
+ if(!section) return;
+ const railEls = Array.from(section.querySelectorAll('.ci-rail'));
+ if(!railEls.length) return;
 
- if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
- const lineEls = Array.from(section.querySelectorAll('.ci-line'));
- if(!lineEls.length) return;
-
- // build a flat particle list; one entry per character
- const parts = [];
- lineEls.forEach(function(lineEl, li){
-  const dir    = parseFloat(lineEl.dataset.dir) || 1;
-  const travel = parseFloat(lineEl.dataset.travel) || 1;
-  const chars  = Array.from(lineEl.querySelectorAll('.ci-ch'));
-
-  chars.forEach(function(el, ci){
-   // deterministic pseudo-random so each glyph differs but stays stable across reloads
-   const n = Math.sin((li + 1) * 12.9898 + ci * 78.233) * 43758.5453;
-   const r = n - Math.floor(n);                       // 0..1
-
-   parts.push({
-    el: el,
-    dir: dir,
-    travel: travel,
-    // per-character physics — kept in a narrow band so the words stay readable
-    k:    0.055 + r * 0.055,        // spring stiffness
-    damp: 0.80  + r * 0.09,         // velocity retention
-    mass: 0.75  + r * 0.55,         // how hard scroll shoves it
-    lift: (ci % 2 === 0 ? -1 : 1) * (0.55 + r * 0.75),  // alternating vertical kick
-    x: 0, vx: 0,
-    y: 0, vy: 0,
-    px: null, py: null              // last painted values (skip no-op writes)
-   });
-  });
- });
-
- let scrollVel = 0, lastY = window.scrollY || window.pageYOffset || 0;
- let running = true, raf = 0;
-
- // cached layout
- let span = 1, vw = window.innerWidth;
- function measure(){
-  span = Math.max(1, section.offsetHeight - pin.offsetHeight);
-  vw   = window.innerWidth;
+ // Reduced motion, or the libraries failed to load: fall back to static type. The
+ // stage is absolutely positioned, so the flowing measure copy becomes the visible text.
+ if(reduce || !hasGsap){
+  section.classList.add('ci-static');
+  return;
  }
 
- function frame(){
-  raf = requestAnimationFrame(frame);
-  if(!running) return;
+ gsap.registerPlugin(ScrollTrigger);
 
-  const y = window.scrollY || window.pageYOffset || 0;
-  // smoothed scroll velocity — this is what gives the letters their "shove"
-  scrollVel += ((y - lastY) - scrollVel) * 0.28;
-  lastY = y;
+ const rails = railEls.map(function(el){
+  return {
+   el: el,
+   start: parseFloat(el.getAttribute('data-start')) || 0,
+   glyphs: Array.from(el.querySelectorAll('.ci-stage .ci-ch')),
+   measures: Array.from(el.querySelectorAll('.ci-measure span')),
+   offsets: [], width: 0, landX: 0, launchX: 0, launchY: 0, prev: []
+  };
+ });
 
-  // scroll progress through the pinned section -> where each line WANTS to sit
-  let p = (-section.getBoundingClientRect().top) / span;
-  p = p < 0 ? 0 : (p > 1 ? 1 : p);
-  const centred = (p - 0.5) * 2;                      // -1 .. 1
+ // Flight tuning, carried over from the reference.
+ const LAUNCH_ROT   = 35;     // degrees of tilt at the launch point
+ const LAUNCH_SCALE = 0.6;    // glyph starts smaller and grows as it arrives
+ const JUMP_DIST    = 220;    // horizontal span of the flight, px
+ const ARC_POW      = 1.8;    // >1 steepens the descent near the landing
+ const LAND_ZONE    = 90;     // px over which the landing settles
 
-  for(let i = 0; i < parts.length; i++){
-   const t = parts[i];
+ let travel = 0;
 
-   // where the spring is pulling this character
-   const targetX = t.dir * centred * vw * 0.55 * t.travel;
+ function measure(){
+  const vw = window.innerWidth;
+  const railH = rails[0].el.clientHeight || 120;
+  const edge = Math.max(48, vw * 0.05);
+  for(let r = 0; r < rails.length; r++){
+   const rail = rails[r];
+   // natural per-glyph offsets, straight from the browser's own layout
+   let w = 0;
+   for(let i = 0; i < rail.measures.length; i++){
+    const m = rail.measures[i];
+    rail.offsets[i] = m.offsetLeft;
+    w = m.offsetLeft + m.offsetWidth;
+   }
+   rail.width   = w;
+   rail.landX   = vw - edge;      // single landing point, shared by every glyph
+   rail.launchX = vw + 90;        // single launch point, shared by every glyph
+   rail.launchY = -(railH * 1.9);
+   rail.prev = new Array(rail.glyphs.length).fill('');
+  }
+  travel = Math.max.apply(null, rails.map(function(r){ return r.width; })) + window.innerWidth;
+ }
 
-   // scroll velocity shoves it along its rail (fast scroll = bigger shove)
-   t.vx += scrollVel * 0.16 * t.mass * t.dir;
-   // spring toward target + damping => overshoot then settle
-   t.vx += (targetX - t.x) * t.k;
-   t.vx *= t.damp;
-   t.x  += t.vx;
+ function render(p){
+  for(let r = 0; r < rails.length; r++){
+   const rail = rails[r];
+   // per-line stagger, so the three lines don't fire simultaneously
+   const sp = rail.start >= 1 ? 0 : Math.min(1, Math.max(0, (p - rail.start) / (1 - rail.start)));
 
-   // subtle vertical hop, proportional to how hard it is currently moving
-   const kick = Math.min(Math.abs(scrollVel) * 0.14, 9) * t.lift;
-   t.vy += (kick - t.y) * (t.k * 1.5);
-   t.vy *= t.damp * 0.96;
-   t.y  += t.vy;
+   // LEAD keeps every glyph short of the landing point at p=0, so the line starts
+   // genuinely empty. EXIT (> one viewport) lets the formed line clear the screen by p=1.
+   const LEAD = JUMP_DIST * 1.15;
+   const EXIT = window.innerWidth * 1.05;
+   const span = LEAD + rail.width + EXIT;
+   const currentTrainX = rail.landX + LEAD - sp * span;
 
-   const nx = Math.round(t.x * 10) / 10;
-   const ny = Math.round(t.y * 10) / 10;
-   if(nx !== t.px || ny !== t.py){
-    t.el.style.transform = 'translate3d(' + nx + 'px,' + ny + 'px,0)';
-    t.px = nx; t.py = ny;
+   for(let i = 0; i < rail.glyphs.length; i++){
+    const letterSlotX    = currentTrainX + rail.offsets[i];
+    const distanceToLand = letterSlotX - rail.landX;
+
+    let tf, op;
+    if(distanceToLand > 0){
+     // ── Stage 1: waiting at, or flying from, the launch point ──
+     const jumpProgress = 1 - Math.min(1, Math.max(0, distanceToLand / JUMP_DIST));
+     if(jumpProgress <= 0){
+      op = 0;
+      tf = 'translate3d(' + rail.launchX + 'px,' + rail.launchY + 'px,0) rotate(' +
+           LAUNCH_ROT + 'deg) scale(' + LAUNCH_SCALE + ')';
+     } else {
+      const ease   = Math.pow(jumpProgress, ARC_POW);
+      const curX   = rail.launchX + (rail.landX - rail.launchX) * ease;
+      const curY   = rail.launchY + (0 - rail.launchY) * ease;
+      const curRot = LAUNCH_ROT * (1 - ease);
+      const curSc  = LAUNCH_SCALE + (1 - LAUNCH_SCALE) * ease;
+      op = Math.min(1, jumpProgress * 2);
+      tf = 'translate3d(' + curX.toFixed(1) + 'px,' + curY.toFixed(1) + 'px,0) rotate(' +
+           curRot.toFixed(2) + 'deg) scale(' + curSc.toFixed(3) + ')';
+     }
+    } else {
+     // ── Stage 2: landed. Rigid glide at exact measured spacing ──
+     // A very short compression right after touchdown: 0.96 -> 1.02 -> 1.
+     const since = -distanceToLand;
+     let sy = 1;
+     if(since < LAND_ZONE){
+      const t = since / LAND_ZONE;
+      sy = 1 + (t < 0.45
+       ? -0.04 * (1 - t / 0.45)
+       :  0.02 * Math.sin((t - 0.45) / 0.55 * Math.PI));
+     }
+     op = 1;
+     tf = 'translate3d(' + letterSlotX.toFixed(1) + 'px,0,0) rotate(0deg) scale(1,' + sy.toFixed(3) + ')';
+    }
+
+    const key = tf + '|' + op;
+    if(rail.prev[i] !== key){       // dirty-checked write
+     const el = rail.glyphs[i];
+     el.style.transform = tf;
+     el.style.opacity = op;
+     rail.prev[i] = key;
+    }
    }
   }
  }
 
- // only run the solver while the section is anywhere near the viewport
- if('IntersectionObserver' in window){
-  new IntersectionObserver(function(en){
-   running = en[0].isIntersecting;
-   if(running) lastY = window.scrollY || window.pageYOffset || 0;   // avoid a jump on re-entry
-  }, { rootMargin: '250px 0px' }).observe(section);
- }
-
  measure();
- window.addEventListener('resize', measure);
- raf = requestAnimationFrame(frame);
+ render(0);
+
+ ScrollTrigger.create({
+  trigger: section,
+  start: 'top top',
+  end: function(){ return '+=' + travel; },
+  pin: true,
+  scrub: 1.1,
+  invalidateOnRefresh: true,
+  onRefresh: function(){ measure(); },
+  onUpdate: function(self){ render(self.progress); }
+ });
+
+ // recalculate glyph positions and ScrollTrigger measurements on resize
+ window.addEventListener('resize', function(){ ScrollTrigger.refresh(); });
 })();
 
 // ── Case studies — carousel track driven entirely by vertical scroll ──
